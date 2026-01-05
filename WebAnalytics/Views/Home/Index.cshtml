@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout";
+}
+
+<script src="~/js/chart.js"></script>
+<script src="~/js/chartjs-plugin-datalabels.js"></script>
+<link href="~/css/home.css" rel="stylesheet" />
+<link href="~/css/timeline.css" rel="stylesheet" />
+<div class="container">
+
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Analytics</span>
+            <!-- Dropdown on the right side -->
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div class="d-flex gap-2">
+                    <select class="form-select w-auto" aria-label="Default select example" id="ddlappliction">
+                    </select>
+                    @{
+                        var currentYear = DateTime.Now.Year;
+                        var years = Enumerable.Range(currentYear - 4, 5).Reverse();
+                    }
+
+                    <select id="ddlYears" name="year" class="form-select w-auto " aria-label="Default select example">
+                        @foreach (var year in years)
+                        {
+                            <option value="@year">@year</option>
+                        }
+                    </select>
+
+
+                    @{
+                        var currentMonth = DateTime.Now.Month;
+
+                        var months = Enumerable.Range(1, 12)
+                        .Select(m => new
+                        {
+                            Value = m,
+                            Name = new DateTime(2000, m, 1).ToString("MMMM")
+                        })
+                        .Reverse(); // Dec → Jan
+                    }
+
+                    <select id="ddlMonths" name="month" class="form-select w-auto" aria-label="Select month">
+                        @foreach (var month in months)
+                        {
+                            <option value="@month.Value"
+                                    selected="@(month.Value == currentMonth)">
+                                @month.Name
+                            </option>
+                        }
+                    </select>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="dashboard">
+
+                <div>
+                    <div class="newprojectheading text-left"> <span>Concurrent Users</span> </div>
+                    <div class="chart-box">
+
+                        <!-- Vertical Bar Chart -->
+                        <canvas id="barChartForConcurrentuser"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="newprojectheading text-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>  Daily Hit Counts</span>
+
+                        </div>
+
+                    </div>
+                    <div class="chart-box">
+
+                        <!-- Line Chart -->
+                        <canvas id="lineChartDays"></canvas>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="newprojectheading text-center">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span> Monthly Hit Counts</span>
+
+                        </div>
+
+                    </div>
+                    <div class="chart-box">
+
+                        <!-- Line Chart -->
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="newprojectheading text-left"> <span>Total Counts</span> </div>
+                    <div class="chart-box">
+
+                        <!-- Vertical Bar Chart -->
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script src="~/developerjs/analytics.js"></script>
+<!-- Right-side slide-in modal (Bootstrap markup example) -->
+<div class="modal fade right-modal" id="concurrentUsersOffcanvas" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideout modal-lg">
+        <div class="modal-content">
+            @*  <div class="modal-header">
+                <h5 class="modal-title applicationname">Project Timeline</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="hideModal()"></button>
+            </div> *@
+            <div class="modal-body1">
+                <div class="main">
+                    <div class="cardTop">
+                        <svg width="497" height="219" viewBox="0 0 497 219" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M-38.5 196C-38.5 196 34 91 133.5 91C233 91 427 159 532.5 30C638 -99 518 236 518 236L-49 246.5L-38.5 196Z"
+                                  fill="#FF768E" />
+                        </svg>
+                    </div>
+                    <div class="timeline">
+                        <div class="scroll-controls">
+                            <button class="scroll-control" onclick="scrollToTop()" title="Scroll to top">↑</button>
+                            <button class="scroll-control" onclick="scrollToBottom()" title="Scroll to bottom">↓</button>
+                            <button class="scroll-control" onclick="hideModal()" data-bs-dismiss="modal" title="Auto scroll">X</button>
+
+                        </div>
+                        <h3 class="applicationname"></h3>
+                        <label class="subtitle"></label>
+
+                        <!-- Scrollable container -->
+                        <div class="timeline-scroll" id="timelineScroll">
+                            <ul class="timeline-list" id="timelineList">
+                                <!-- JS will inject <li class="timeline-item">…</li> here -->
+                            </ul>
+                        </div>
+                        @*   <div class="bottom">
+                            <button class="btn btn-outline-primary" type="button" onclick="loadMoreUpdates()">Show all updates</button>
+                        </div> *@
+                    </div>
+                </div><!-- /.main -->
+            </div><!-- /.modal-body -->
+        </div>
+    </div>
+
+
+

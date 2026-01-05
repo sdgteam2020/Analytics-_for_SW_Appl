@@ -1,0 +1,22 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.3.8",
+      "destination": "wwwroot/bootstrap/"
+    },
+    {
+      "library": "sweetalert2@11.23.0",
+      "destination": "wwwroot/sweetalert2/"
+    },
+    {
+      "library": "Chart.js@4.5.0",
+      "destination": "wwwroot/Chart.js/"
+    },
+    {
+      "library": "chartjs-plugin-datalabels@2.2.0",
+      "destination": "wwwroot/chartjs-plugin-datalabels/"
+    }
+  ]
+}

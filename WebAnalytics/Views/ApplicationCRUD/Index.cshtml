@@ -1,0 +1,141 @@
+﻿@using Domain.Requests;
+@model DTORequestApplicationDetails;
+@{
+    ViewData["Title"] = "Add Application";
+    Layout = "_Layout";
+}
+
+<div class="container py-4">
+
+    <!-- Create Form -->
+    <div class="card mb-4">
+        <div class="card-header">Add Application</div>
+        <div class="card-body">
+            <form id="appForm" class="d-flex flex-wrap align-items-center gap-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @Html.AntiForgeryToken()
+                <input asp-for="ApplicationId" class="form-control d-none" value="0" />
+                <div class="form-group row mb-3">
+                    <label asp-for="ApplicationName" class="col-md-6 col-form-label"></label>
+                    <div class="col-md-6">
+                        <input asp-for="ApplicationName" class="form-control" required />
+                        <span asp-validation-for="ApplicationName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label asp-for="Description" class="col-md-6 col-form-label"></label>
+                    <div class="col-md-6">
+                        <input asp-for="Description" class="form-control" required />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <label asp-for="origin" class="col-md-3 col-form-label"></label>
+                    <div class="col-md-9">
+                        <input asp-for="origin" class="form-control" required />
+                        <span asp-validation-for="origin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <button type="submit" class="btn btn-primary mt-0" id="btnsave">Save</button>
+                   
+                </div>
+            </form>
+
+
+            <table class="table table-bordered" id="appsTable">
+                <thead class="table-primary">
+                    <tr>
+                        <th>#</th>
+                        <th>Application Name</th>
+                        <th>Description</th>
+                        <th>applicationKey</th>
+                        <th>origin</th>
+                        
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Code Snippet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+                <div class="code-snippet">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in landing page for Hit Counter </span>
+                        <button class="copy-btn"">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippet">
+                   </code></pre>
+                </div>
+                <div class="code-snippet">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in landing page for Concurrent Users </span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetDashboard">
+                   </code></pre>
+                </div>
+                <div class="code-snippet">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in Logout page for Logout Concurrent Users </span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetLogout">
+                   </code></pre>
+                </div>
+                <div class="code-snippet d-none">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in landing page for Hit Counter With DomainId</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetHitCounterDomainId">
+                   </code></pre>
+                </div>
+                <div class="code-snippet d-none">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in landing page for Concurrent Users With DomainId</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetDashboardDomainId">
+                   </code></pre>
+                </div>
+                <div class="code-snippet d-none">
+                    <div class="code-header">
+                        <span class="file-name">Paste code in Logout page for Logout Concurrent Users With DomainId (Logout Page)</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetLogoutDomainId">
+                   </code></pre>
+                </div>
+                <div class="code-snippet">
+                    <div class="code-header">
+                        <span class="file-name">This code gets own concurrent users, today’s hits, monthly hits, and total hits.</span>
+                        <button class="copy-btn">Copy</button>
+                    </div>
+                    <pre><code class="language-js" id="codeSnippetGetHitCounter">
+                   </code></pre>
+                </div>
+            </div>
+            @* <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="copyBtn" class="btn btn-primary">Copy</button>
+                </div> *@
+        </div>
+    </div>
+</div>
+
+<script src="~/developerjs/applicationcrud.js"></script>

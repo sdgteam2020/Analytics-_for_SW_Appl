@@ -1,0 +1,54 @@
+﻿.dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    column-gap: 10px;
+}
+
+.chart-box {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+canvas {
+    width: 80% !important;
+    height: 80% !important;
+}
+
+.newprojectheading {
+    background: #4269c1;
+    /* margin-bottom: 4px; */
+    height: 35px;
+    color: white;
+    font-size: 23px;
+    padding: 0px;
+    font-family: serif;
+    font-weight: 600;
+}
+
+    .newprojectheading span {
+        margin-left: 10px;
+    }
+
+@media (min-width: 1400px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+        max-width: 95%;
+    }
+}
+/* Modal positioning */
+.modal.right-modal .modal-dialog {
+    position: fixed;
+    right: 0;
+    margin: 0;
+    height: 100%;
+}
+
+.modal.right-modal .modal-content {
+    height: 100%;
+    overflow-y: auto;
+    border-radius: 0;
+}

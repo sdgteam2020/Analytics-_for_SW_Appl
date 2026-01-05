@@ -1,0 +1,312 @@
+﻿/* --- Slide-in modal on the right --- */
+.right-modal .modal-dialog {
+    margin: 0;
+    height: 100%;
+    max-width: 720px;
+}
+
+.modal-dialog-slideout {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.right-modal.show .modal-dialog-slideout {
+    transform: translateX(0);
+}
+
+/* --- Layout & palette --- */
+:root {
+    --card-bg: #ffffff;
+    --ink: #2B2862;
+    --muted: #D1D6E6;
+    --primary: #2B2862;
+    --badge: #73a3f9;
+    --surface: #fbfcfd;
+}
+
+.main {
+    position: relative;
+    min-height: 420px;
+}
+
+.cardTop {
+    width: 355px;
+    height: 152px;
+    background: #115ee7;
+    border-radius: 20px;
+    margin: 10px auto 0;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    position: relative;
+}
+
+.timeline {
+    width: 355px;
+    margin: -200px auto 0;
+    background: rgba(236,241,245,0.14);
+    backdrop-filter: blur(15px);
+    box-shadow: 0px 20px 53px -30px rgba(95,102,173,0.56);
+    border-radius: 10px;
+    padding-bottom: 8px;
+}
+
+    .timeline h3 {
+        font-family: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        line-height: 30px;
+        color: #FFFFFF;
+       padding:10px;
+       margin-top:30px;
+    }
+
+    .timeline .subtitle {
+        display: block;
+        font-family: "Open Sans", Arial, sans-serif;
+        font-size: 20px;
+        margin: 2px 0 0 10px;
+        color: #FFFFFF;
+    }
+
+/* Scroll area */
+.timeline-scroll {
+    background: var(--surface);
+    margin-top: 10px;
+    max-height: 800px; /* <-- makes the list scroll */
+    overflow-y: auto;
+    padding: 16px 12px 16px 0;
+    border-radius: 10px;
+}
+
+/* Timeline list */
+.timeline-list {
+    list-style: none;
+    margin: 0;
+    padding: 24px 16px 24px 56px;
+    position: relative;
+}
+
+    /* Vertical line */
+    .timeline-list::before {
+        content: "";
+        position: absolute;
+        left: 32px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #4deb0c;
+        opacity: 0.9;
+    }
+
+/* Each item = marker + card */
+.timeline-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 14px 0;
+}
+
+    /* Dot marker */
+    .timeline-item .marker {
+        position: absolute;
+        left: -29px;
+        top: 12px;
+        width: 14px;
+        height: 14px;
+        background: #d50000e3;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    /* Active/completed states */
+    .timeline-item.active .marker {
+        background: var(--badge);
+        box-shadow: 0 0 10px rgba(115, 163, 249, 0.4);
+    }
+
+    .timeline-item.completed .marker {
+        background: #4CAF50;
+    }
+
+    /* Card look */
+    .timeline-item .card {
+        width: 280px;
+        min-height: 72px;
+        padding: 16px 16px 14px 16px;
+        background: var(--card-bg);
+        border-radius: 10px;
+        box-shadow: 0px 16px 15px -10px rgba(105, 96, 215, 0.09), 0 2px 2px 0 rgba(238, 238, 238, 0.25);
+        transition: all 0.3s ease;
+    }
+
+        .timeline-item .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 20px 25px -10px rgba(105, 96, 215, 0.15), 0 4px 8px 0 rgba(238, 238, 238, 0.3);
+        }
+
+        .timeline-item .card h4 {
+            margin: 0 0 6px 0;
+            font: 700 14px/19px "Open Sans", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .timeline-item .card p {
+            margin: 0;
+            font: 400 14px/20px "Open Sans", Arial, sans-serif;
+            color: var(--ink);
+        }
+
+        .timeline-item .card .time {
+            font: 600 12px/16px "Open Sans", Arial, sans-serif;
+            color: var(--badge);
+            margin-bottom: 4px;
+        }
+
+/* Footer button area */
+.bottom {
+    width: 100%;
+    padding: 16px 0 24px;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 0 2px rgba(238,238,238,0.31);
+}
+
+    .bottom .btn {
+        min-width: 240px;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+/* Optional: slim scrollbar (WebKit) */
+.timeline-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.timeline-scroll::-webkit-scrollbar-thumb {
+    background: #e0e5ee;
+    border-radius: 8px;
+}
+
+.timeline-scroll::-webkit-scrollbar-track {
+    background: #f5f7fa;
+    border-radius: 8px;
+}
+
+
+.demo-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--badge);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .demo-btn:hover {
+        background: #5a8ef7;
+        transform: translateY(-2px);
+    }
+
+/* Animation for timeline items */
+.timeline-item {
+    opacity: 0;
+    transform: translateX(20px);
+    animation: fadeInSlide 0.6s ease-out forwards;
+}
+
+    .timeline-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .timeline-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .timeline-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .timeline-item:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .timeline-item:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .timeline-item:nth-child(6) {
+        animation-delay: 0.6s;
+    }
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Auto scroll animation */
+.auto-scrolling .timeline-list {
+    animation: autoScroll 20s linear infinite;
+}
+
+@keyframes autoScroll {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-200px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Control buttons */
+.scroll-controls {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+}
+
+.scroll-control {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+    .scroll-control:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }

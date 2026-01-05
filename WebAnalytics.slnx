@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="DataAccessLayerEF/DataAccessLayerEF.csproj" Id="8e4a1534-2aa6-4c3a-bdf4-633bebd1f9ff" />
+  <Project Path="DataTransferObject/Domain.csproj" Id="7dcdd7c8-01c2-4cf2-b9d4-f00dd25dc7bd" />
+  <Project Path="WebAnalytics/WebAnalytics.csproj" />
+</Solution>
