@@ -1,4 +1,4 @@
-using DataAccessLayerEF;
+﻿using DataAccessLayerEF;
 using Domain.Identitytable;
 using Domain.interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +18,7 @@ var configuration = builder.Configuration;
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.UseSqlServer(configuration.GetConnectionString("DBConnection")));
 
-// Use Identity�s cookie (avoid defining your own separate "Cookies" scheme)
+// Use Identity’s cookie (avoid defining your own separate "Cookies" scheme)
 builder.Services
     .AddIdentity<ApplicationUser, ApplicationRole>(opts =>
     {
@@ -134,9 +134,10 @@ app.Use(async (ctx, next) =>
         "img-src 'self' data:; " +
         "font-src 'self' data:; " +
         //"connect-src 'self'; " +
-        "frame-ancestors 'none'; " +
+        "frame-ancestors 'self'; " +
         "base-uri 'self'; " +
         "form-action 'self';";
+
 
     // 2) X-Frame-Options (align with frame-ancestors)
     ctx.Response.Headers["X-Frame-Options"] = "DENY";

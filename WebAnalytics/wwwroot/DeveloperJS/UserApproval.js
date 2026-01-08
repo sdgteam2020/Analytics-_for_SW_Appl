@@ -26,7 +26,7 @@ function GetAllUser() {
                         <tr>
                             <td class="align-middle">${index + 1}</td>
                             <td class="align-middle"><span class="divName">${item.UserName}</span></td>
-                             <td class="align-middle"><span class="divName">${item.ArmyNo}</span></td>
+                            
                              <td class="align-middle"><span class="divName">${item.RankName}</span></td>
                             <td class="align-middle"><span class="divName">${item.Name}</span></td>
                            

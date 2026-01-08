@@ -30,7 +30,7 @@ namespace DataAccessLayerEF
                 {
                     Id = A.Id,
                     UserName = A.UserName,
-                    ArmyNo = A.ArmyNo,
+                   
                     Name = A.Name,
                     Active = A.Active,
                     UpdatedOn = A.UpdatedOn,

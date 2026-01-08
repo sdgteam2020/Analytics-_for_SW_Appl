@@ -120,6 +120,12 @@
   <data name="AadhaarNoDigit" xml:space="preserve">
     <value>AADHAAR Number is last four digits.</value>
   </data>
+  <data name="AlphaNumericOnly" xml:space="preserve">
+    <value>Alpha Numeric Only</value>
+  </data>
+  <data name="Alphawithspace" xml:space="preserve">
+    <value>Only Alphabet is allow</value>
+  </data>
   <data name="ArmyNumberDigit" xml:space="preserve">
     <value>Army Number is five digits.</value>
   </data>
@@ -161,6 +167,9 @@
   </data>
   <data name="SpecialCharsWithSymbol" xml:space="preserve">
     <value>Special chars not allowed except / -. :.</value>
+  </data>
+  <data name="StrongPassword" xml:space="preserve">
+    <value>Password must be at least 8 characters long and contain an uppercase letter, lowercase letter, number, and special character.</value>
   </data>
   <data name="TermsConditionsError" xml:space="preserve">
     <value>Please accept the terms and condition.</value>

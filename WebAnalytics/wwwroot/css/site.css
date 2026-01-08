@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -8,21 +8,22 @@ html {
   }
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
+/* Wrapper fills full screen */
+.page-wrapper {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
+
+/* Content takes remaining space */
+.content {
+    flex: 1;
+}
+
 /* Card Header */
 .card-header {
     background-color: #3e8bff;
-   /* padding: 2px;*/
-
+    /* padding: 2px;*/
     /* border-top-left-radius: 0.375rem; */
     /* border-top-right-radius: 0.375rem; */
     border: 1px solid #e0e0e0;
@@ -131,41 +132,67 @@ code {
     margin-top: 15px;
 }
 /* Footer styling */
+/* Footer */
 footer {
-    margin-top: auto;
-    padding: 0;
+    display: flex;
+    align-items: center;
+    margin-top: auto; /* ⭐ key line */
 }
 
     footer .footer {
         background-color: #1f53c9;
         color: #fff;
-        text-align: center;
         width: 100%;
-        padding: 10px 0;
+        padding: 10px 16px;
         border-top: 2px solid #1f53c9;
     }
 
-        /* Remove Bootstrap floats */
-        footer .footer .float-left,
-        footer .footer .float-right {
-            float: none !important;
-            display: inline-block;
-        }
+/* Flex layout */
+.footer-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-        /* Footer links */
-        footer .footer a {
-            color: #ffd966;
-            text-decoration: none;
-        }
+/* Center text */
+.footer-center {
+    flex: 1; /* take remaining space */
+    text-align: center;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 18%;
+}
 
-            footer .footer a:hover {
-                text-decoration: underline;
-            }
+/* Right section */
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+    margin-left: auto; /* push to right safely */
+}
 
-        /* Optional icon color */
-        footer .footer .text-danger {
-            color: #ffd966 !important;
-        }
+/* Remove Bootstrap floats safely */
+footer .footer .float-left,
+footer .footer .float-right {
+    float: none !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-flex {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .footer-center,
+    .footer-right {
+        text-align: center;
+        white-space: normal;
+    }
+}
 
 @media (max-width: 480px) {
     .navbar img {
@@ -173,5 +200,5 @@ footer {
     }
 }
 .cls-logo{
-    height:30px;
+    height:60px;
 }

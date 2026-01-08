@@ -25,12 +25,12 @@ body {
         background-image: url('../images/deng-xiang.jpg');
         background-size: cover;
         background-position: center;
-        filter: blur(16px);
+        filter: blur(1px);
         z-index: -1;
     }
 
 .login-card {
-    background: #fff;
+    background: #1f53c945;
     border-radius: 15px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
     padding: 30px;

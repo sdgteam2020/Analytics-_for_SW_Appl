@@ -158,7 +158,34 @@ namespace Domain.Localize {
                 return ResourceManager.GetString("OnlyNumber", resourceCulture);
             }
         }
-        
+        /// <summary>
+        ///   Looks up a localized string similar to Only alphabets and numbers are allowed.
+        /// </summary>
+        public static string AlphaNumericOnly
+        {
+            get
+            {
+                return ResourceManager.GetString("AlphaNumericOnly", resourceCulture);
+            }
+        }
+        public static string Alphawithspace
+        {
+            get
+            {
+                return ResourceManager.GetString("Alphawithspace", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Only alphabets and numbers are allowed.
+        /// </summary>
+        public static string StrongPassword
+        {
+            get
+            {
+                return ResourceManager.GetString("StrongPassword", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is required..
         /// </summary>

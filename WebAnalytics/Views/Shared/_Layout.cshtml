@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebAnalytics</title>
+    <title>DGIS Analytics</title>
     <script type="importmap"></script>
    
     <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -22,6 +22,7 @@
     <script src="~/js/site.js"></script>
 </head>
 <body>
+    <div class="page-wrapper">
     @{
         var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await userManager.FindByIdAsync(userId);
@@ -78,31 +79,31 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+            <main role="main" class="pb-3 content">
             @RenderBody()
         </main>
     </div>
 
     <footer>
-        <div class="footer clearfix mb-0 ">
-            @* <div class="float-left">
-             <p>2025</p>
-         </div> *@
-            <div class="float-right">
-                <div class="float-left">
-                    <img src="~/images/dgislogo.png" height="40" />
-                </div>
-                <div class="float-right">
+        <div class="footer footer-flex mb-0">
 
-                    <b>Designed and Developed by ASDC DGIS Contact No-39644</b>
+            <!-- Center text -->
+            <div class="footer-center">
+                <img src="~/images/dgislogo.png" height="40" />  <b>Designed and Developed by ASDC DGIS Contact No-39644</b>
+            </div>
 
-                </div>
-
+            <!-- Right side -->
+            <div class="footer-right">
+                <div><b>Concurrent Users:</b> <span id="ConcurrentUsers">0</span></div>
+                <div><b>Today:</b> <span id="TodayHits">0</span></div>
+                <div><b>Monthly:</b> <span id="MonthlyHits">0</span></div>
+                <div><b>Total:</b> <span id="TotalHits">0</span></div>
 
             </div>
-           
+
         </div>
     </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

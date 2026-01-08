@@ -11,15 +11,17 @@ namespace Domain.Requests
     public class DTORegistraionRequest
     {
         [StringLength(20)]
-        public string UserName { get; set; } = string.Empty;
-        [StringLength(10)]
-        [Required(ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "RequiredError")]
-        [MinLength(8, ErrorMessage = "Minimum length of Offr Army No is eight character.")]
-        [MaxLength(8, ErrorMessage = "Maximum length of Offr Army No is ten character.")]
-        //[RegularExpression(@"^[a-zA-Z0-9]+$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
-        [RegularExpression(@"^[A-Za-z]{2}[0-9]{5}[A-Za-z]$", ErrorMessage = "Army No must be in the correct format, e.g., IC546845X.")]
+        [MinLength(1, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MinLengthError")]
+        [MaxLength(20, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MaxLengthError")]
+        [RegularExpression(
+    @"^[a-zA-Z0-9]+$",
+    ErrorMessageResourceType = typeof(ErrorMessages),
+    ErrorMessageResourceName = "AlphaNumericOnly"
+)]
 
-        public string ArmyNo { get; set; } = string.Empty;
+        [Required]
+        public string UserName { get; set; } = string.Empty;
+
         [Required]
         [ForeignKey("MRank")]
         [RegularExpression(@"^[\d]+$", ErrorMessage = "RankId is number.")]
@@ -30,11 +32,17 @@ namespace Domain.Requests
         [Required(ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "RequiredError")]
         [MinLength(1, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MinLengthError")]
         [MaxLength(50, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MaxLengthError")]
-        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
+        [RegularExpression(@"^[a-zA-Z]+( [a-zA-Z]+)*$",ErrorMessageResourceType = typeof(ErrorMessages),ErrorMessageResourceName = "Alphawithspace")]
+
         public string Name { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Password)]
+        [RegularExpression(
+    @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$",
+    ErrorMessageResourceType = typeof(ErrorMessages),
+    ErrorMessageResourceName = "StrongPassword"
+)]
         public string Password { get; set; } = string.Empty;
 
 

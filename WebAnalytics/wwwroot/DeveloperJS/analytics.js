@@ -235,9 +235,14 @@ function BindchartMonthsWiseHitCounter(dtoApplicationMonthsWiseList) {
 
     }
     else {
+        const allMonths = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const lineLabels = allMonths;
         $("#ddlYears").val(dtoApplicationMonthsWiseList[0].Years);
         // Prepare Labels (Months)
-        const lineLabels = [...new Set(dtoApplicationMonthsWiseList.map(item => item.MonthsName))];  // Unique months
+       // const lineLabels = [...new Set(dtoApplicationMonthsWiseList.map(item => item.MonthsName))];  // Unique months
 
         // Organize data by ApplicationName
         const applications = [...new Set(dtoApplicationMonthsWiseList.map(item => item.ApplicationName))];  // Unique application names
@@ -336,14 +341,14 @@ function BindchartDaysWiseHitCounter(dtoApplicationDayWiseList) {
         const datasets = applications.map(application => {
             // Filter the data for each application
             const appData = dtoApplicationDayWiseList.filter(item => item.ApplicationName === application);
-
+         
             // Create a dataset for each application
             return {
                 label: application,  // Application Name
                 data: lineLabels.map(days => {
                     const entry = appData.find(item => item.Days === days);
                     
-                    return entry ? entry.TotalHits : 0;  // If no data, return 0
+                    return entry ?  entry.TotalHits : 0;  // If no data, return 0
                 }),
                 fill: false,
                 borderColor: barColors,  // Random color for each line

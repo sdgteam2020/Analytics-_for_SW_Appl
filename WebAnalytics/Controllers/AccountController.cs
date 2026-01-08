@@ -55,6 +55,8 @@ namespace WebAnalytics.Controllers
                     ViewBag.hdns = GetSalt;
                     string Password = AESEncrytDecry.DecryptAES(request.Password, GetSalt);  //decrypt password
                     request.Password = Password;
+                    string username = AESEncrytDecry.DecryptAES(request.UserName, GetSalt);  //decrypt password
+                    request.UserName = username;
                 }
                 // Find the user by Domain ID (or username)
                 var user = await _userManager.FindByNameAsync(request.UserName); // Or use FindByEmailAsync, depending on your model
@@ -92,7 +94,7 @@ namespace WebAnalytics.Controllers
                             RoleName = string.Join(",", await _userManager.GetRolesAsync(user)),
                             UserName = user.UserName,
                             Name = user.Name,
-                            ArmyNO = user.ArmyNo,
+                            
                             RankName = ret.RankAbbreviation,
                         };
 
@@ -162,7 +164,11 @@ namespace WebAnalytics.Controllers
         {
             bool ActiveStatus = false;
             
-
+            if(model.RankId==null  || model.RankId==0)
+            {
+                ModelState.AddModelError(string.Empty, "Select Rank.");
+                return View(model);
+            }
             ViewBag.UserName = model.UserName;
             if (ModelState.IsValid)
             {
@@ -176,7 +182,7 @@ namespace WebAnalytics.Controllers
                 int userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
                 var user = new ApplicationUser
                 {
-                    ArmyNo = model.ArmyNo,
+                    
                     RankId = model.RankId,
                     Name = model.Name,
                     Active = ActiveStatus,
@@ -205,7 +211,7 @@ namespace WebAnalytics.Controllers
 
                     await _userManager.AddToRoleAsync(user, "User");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                   // await _signInManager.SignInAsync(user, isPersistent: false);
 
 
                     var ret = await _rank.GetByshort(user.RankId);

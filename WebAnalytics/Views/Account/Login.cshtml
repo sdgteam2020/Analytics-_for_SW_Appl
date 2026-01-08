@@ -28,19 +28,19 @@
         </div>
 
         <img src="~/images/logo.png" width="300px" />
-        <h5 class="mb-3">Log In</h5>
+        <h5 class="mb-3 text-white">Log In</h5>
         <form asp-action="Login" asp-controller="Account" method="post" novalidate>
             <input type="hidden" id="aesKey" value="@ViewBag.hdns" />
             @Html.AntiForgeryToken()
             <div class="mb-3 text-start">
-                <label asp-for="UserName" class="form-label"></label>
-                <input asp-for="UserName" class="form__input form-control" value="Admin" />
+                <label asp-for="UserName" class="form-label text-white"></label>
+                <input asp-for="UserName" class="form__input form-control" value="@Model.UserName" required />
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
 
             <div class="mb-3 text-start">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form__input form-control"  />
+                <label asp-for="Password" class="form-label text-white"></label>
+                <input asp-for="Password" class="form__input form-control"  required />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 

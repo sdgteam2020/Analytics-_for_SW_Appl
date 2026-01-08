@@ -125,11 +125,23 @@ namespace DataAccessLayerEF
       select new DTOCounterHitsResponse
       {
           TotalHits = b.TotalHits,
-          TodayHits = a.TodayHits,
+         // TodayHits = a.TodayHits,
           //MonthlyHits = a.MonthHits // was MonthHits?
       }
-      ).AsNoTracking().FirstOrDefaultAsync();
 
+      ).AsNoTracking().FirstOrDefaultAsync();
+            var TodayHits = await (
+                from a in _context.TrnMpplicationHitsSummary
+                join b in _context.trnmApplicationHits on a.ApplicationId equals b.ApplicationId
+                where a.ApplicationId == ApplicationId && a.Date.Date == currentDate.Date
+                select new DTOCounterHitsResponse
+                {
+                   
+                    TodayHits = a.TodayHits,
+                    //MonthlyHits = a.MonthHits // was MonthHits?
+                }
+
+                ).AsNoTracking().FirstOrDefaultAsync();
 
             var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);  // First day of the current month
             var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);  // Last day of the current month
@@ -139,8 +151,14 @@ namespace DataAccessLayerEF
                     a.Date >= startOfMonth &&  // Ensure the date is after the start of the current month
                     a.Date <= endOfMonth)  // Ensure the date is before the end of the current month
             .SumAsync(a => a.TodayHits);  // Sum of TotalHits for the date range
-            hitCounts.MonthlyHits = totalHits;
 
+
+            if (hitCounts != null)
+            {
+                hitCounts.MonthlyHits = totalHits;
+                hitCounts.TodayHits = TodayHits.TodayHits;
+
+            }
             return hitCounts;
         }
 

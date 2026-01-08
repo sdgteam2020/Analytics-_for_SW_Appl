@@ -105,7 +105,7 @@ namespace WebAnalytics.Controllers
         /// Gets hit summary (today, month, total) + concurrent users for a specific app.
         /// </summary>
         // Endpoint to increment hit counter for a specific app
-        [HttpPost("HitswithConcurrentuser/{ApplicationKey}")]
+        [HttpPost("HitswithConcurrentuser")]
         public async Task<IActionResult> HitswithConcurrentuser([FromHeader(Name = "X-API-KEY")]  string ApplicationKey)
         {
             if (string.IsNullOrEmpty(ApplicationKey))
@@ -118,10 +118,13 @@ namespace WebAnalytics.Controllers
                 // Increment the hit counter for the application
                 var activeUser = await _applicationSessions.Concurrentuser(Application.ApplicationId);
                 var res = await _analyticsService.HitCounter(Application.ApplicationId);
-                dTOHitsWithActiveUserResponse.MonthlyHits = res.MonthlyHits;
-                dTOHitsWithActiveUserResponse.TodayHits = res.TodayHits;
-                dTOHitsWithActiveUserResponse.TotalHits = res.TotalHits;
-                dTOHitsWithActiveUserResponse.Concurrentuser = activeUser.Concurrentuser;
+                if (res != null)
+                {
+                    dTOHitsWithActiveUserResponse.MonthlyHits = res.MonthlyHits;
+                    dTOHitsWithActiveUserResponse.TodayHits = res.TodayHits;
+                    dTOHitsWithActiveUserResponse.TotalHits = res.TotalHits;
+                    dTOHitsWithActiveUserResponse.Concurrentuser = activeUser.Concurrentuser;
+                }
                 return Ok(dTOHitsWithActiveUserResponse);
             }
             else

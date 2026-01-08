@@ -8,6 +8,15 @@
     const encryptedPassword = encryptData(plainPassword, secretKey);
     passwordInput.value = encryptedPassword;
 
+
+
+    const UserNameInput = document.querySelector("#UserName");
+    const plainUserName = UserNameInput.value;
+
+
+    const encryptedUserName = encryptData(plainUserName, secretKey);
+    UserNameInput.value = encryptedUserName;
+
     this.submit();
 });
 

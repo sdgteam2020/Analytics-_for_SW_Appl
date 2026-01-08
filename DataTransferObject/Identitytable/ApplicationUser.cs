@@ -13,13 +13,13 @@ namespace Domain.Identitytable
     {
 
 
-        [StringLength(10)]
-        [Column(TypeName = "varchar(10)")]
-        [Required(ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "RequiredError")]
-        [MinLength(8, ErrorMessage = "Minimum length of Offr Army No is eight character.")]
-        [MaxLength(10, ErrorMessage = "Maximum length of Offr Army No is ten character.")]
-        [RegularExpression(@"^[\w]+$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
-        public string ArmyNo { get; set; } = string.Empty;
+        //[StringLength(10)]
+        //[Column(TypeName = "varchar(10)")]
+        //[Required(ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "RequiredError")]
+        //[MinLength(8, ErrorMessage = "Minimum length of Offr Army No is eight character.")]
+        //[MaxLength(10, ErrorMessage = "Maximum length of Offr Army No is ten character.")]
+        //[RegularExpression(@"^[\w]+$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
+        //public string ArmyNo { get; set; } = string.Empty;
 
         [Required]
         [ForeignKey("MRank")]
@@ -28,12 +28,12 @@ namespace Domain.Identitytable
         public MRank? MRank { get; set; }
 
         [StringLength(50)]
-        [Column(TypeName = "varchar(50)")]
         [Required(ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "RequiredError")]
         [MinLength(1, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MinLengthError")]
         [MaxLength(50, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MaxLengthError")]
-        [RegularExpression(@"^[\w ]+$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
-        public string Name { get; set; } = string.Empty;
+        [RegularExpression(@"^[a-zA-Z]+( [a-zA-Z]+)*$", ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "SpecialChars")]
+
+        public string Name { get; set; } = string.Empty; 
 
 
         public bool Active { get; set; } = false;
@@ -45,6 +45,5 @@ namespace Domain.Identitytable
         [DataType(DataType.Date)]
         [Column(TypeName = "datetime")]
         public DateTime UpdatedOn { get; set; }
-        public int RoleType { get; set; }
     }
 }

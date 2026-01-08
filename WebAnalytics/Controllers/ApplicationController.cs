@@ -1,10 +1,12 @@
-﻿using Domain.CommonModel;
+﻿using DataAccessLayerEF;
+using Domain.CommonModel;
 using Domain.interfaces;
 using Domain.Model;
 using Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using WebAnalytics.Helpers;
 
 namespace WebAnalytics.Controllers
@@ -20,16 +22,21 @@ namespace WebAnalytics.Controllers
     {
         private readonly IApplication _iapplication;
         private readonly IApplicationSessions _applicationSessions;
-
+        private readonly IApplicationHitsUserTrack _applicationHitsUserTrack;
+        private readonly ICentralAnalyticsService _analyticsService;
+        private readonly ICentralAnalyticsServiceSummary _centralAnalyticsServiceSummary;
         /// <summary>
         /// DI constructor for <see cref="ApplicationController"/>.
         /// </summary>
         /// <param name="iapplication">Application service for app metadata and keys.</param>
         /// <param name="applicationSessions">Service for managing app user sessions.</param>
-        public ApplicationController(IApplication iapplication, IApplicationSessions applicationSessions)
+        public ApplicationController(IApplication iapplication, IApplicationSessions applicationSessions, IApplicationHitsUserTrack applicationHitsUserTrack, ICentralAnalyticsService centralAnalyticsService, ICentralAnalyticsServiceSummary centralAnalyticsServiceSummary)
         {
             _iapplication = iapplication;
             _applicationSessions = applicationSessions;
+            _applicationHitsUserTrack = applicationHitsUserTrack;
+            _analyticsService = centralAnalyticsService;
+            _centralAnalyticsServiceSummary = centralAnalyticsServiceSummary;
         }
        
         /// <summary>
@@ -93,6 +100,24 @@ namespace WebAnalytics.Controllers
                         MirrorOn = DateTime.Now
                     };
                     var mirror = await _applicationSessions.AddWithMirror(mirrorSession);
+
+
+                    MApplicationHitsUserTrack applicationHitsUserTrack = new MApplicationHitsUserTrack
+                    {
+                        ApplicationId = Application.ApplicationId,
+                        UserId = DomainId,
+                        HitDate = DateTime.Now,
+                        IpAddress = UserId // Store the IP address of the user
+                    };
+                    var ishitexits = await _applicationHitsUserTrack.CheckHitIsToday(applicationHitsUserTrack);
+                    if (!ishitexits)
+                    {
+                        await _analyticsService.IncrementHitCounter(Application.ApplicationId);
+                        await _centralAnalyticsServiceSummary.IncrementHitCounter(Application.ApplicationId);
+                        await _applicationHitsUserTrack.Add(applicationHitsUserTrack);
+
+                        
+                    }
 
                     return Ok(new { message = "SessionStart successfully" });
                 }

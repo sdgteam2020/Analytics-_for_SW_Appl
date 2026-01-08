@@ -14,6 +14,8 @@ namespace WebAnalytics.CustomMiddleware
 
         public async Task InvokeAsync(HttpContext context, ApplicationDbContext db)
         {
+            var apiKey = context.Request.Headers["X-API-KEY"].FirstOrDefault();
+            var origin = context.Request.Headers["Referer"].FirstOrDefault();
             // Apply only to API Controllers
             if (!context.Request.Path.StartsWithSegments("/api"))
             {
@@ -24,8 +26,7 @@ namespace WebAnalytics.CustomMiddleware
            // var origin = context.Request.Headers["Origin"].FirstOrDefault()
             //          ?? context.Request.Headers["Referer"].FirstOrDefault();
 
-            var apiKey = context.Request.Headers["X-API-KEY"].FirstOrDefault();
-            var origin = context.Request.Headers["Referer"].FirstOrDefault();
+         
 
            
             if (string.IsNullOrEmpty(origin) || string.IsNullOrEmpty(apiKey))
