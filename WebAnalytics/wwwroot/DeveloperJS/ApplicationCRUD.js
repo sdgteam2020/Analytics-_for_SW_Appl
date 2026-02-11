@@ -113,7 +113,7 @@
 
         const key = editBtn.data("key");
         // Ensure apiBase ends with a trailing slash
-        const base = (typeof apiBase === "string" ? apiBase : "").replace(/\/?$/, "/");
+        const base = (typeof apiBase1 === "string" ? apiBase1 : "").replace(/\/?$/, "/");
 
         // Build endpoints
         const urlIncrement = `${base}ApplicationHit/IncrementHits`;
