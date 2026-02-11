@@ -16,17 +16,17 @@ namespace WebAnalytics.Controllers
         private readonly IApplication _iapplication;
         private readonly IApplicationHitsUserTrack _applicationHitsUserTrack;
         private readonly IApplicationSessions _applicationSessions;
-        private readonly IAnalyticsSummary _analyticsSummary;
-        private readonly IConfiguration _configuration;
-        public ApplicationHitController(ICentralAnalyticsService analyticsService, IApplication application, IApplicationHitsUserTrack applicationHitsUserTrack, IApplicationSessions applicationSessions, ICentralAnalyticsServiceSummary centralAnalyticsServiceSummary, IAnalyticsSummary analyticsSummary, IConfiguration configuration)
+       
+       
+        public ApplicationHitController(ICentralAnalyticsService analyticsService, IApplication application, IApplicationHitsUserTrack applicationHitsUserTrack, IApplicationSessions applicationSessions, ICentralAnalyticsServiceSummary centralAnalyticsServiceSummary)
         {
             _analyticsService = analyticsService;
             _iapplication = application;
             _applicationHitsUserTrack = applicationHitsUserTrack;
             _applicationSessions = applicationSessions;
             _centralAnalyticsServiceSummary = centralAnalyticsServiceSummary;
-            _analyticsSummary = analyticsSummary;
-            _configuration = configuration;
+           
+            
         }
 
         #region For User

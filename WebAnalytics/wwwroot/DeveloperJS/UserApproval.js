@@ -77,8 +77,8 @@ $(document).on('change', '.updateuser', async function () {
     });
     if (result.isConfirmed)
     {
-        var userId = $(this).data('id');
-        var isActive = $(this).prop('checked');
+        const userId = $(this).data('id');
+        const isActive = $(this).prop('checked');
         const token = $('input[name="__RequestVerificationToken"]').val();
        
         try {

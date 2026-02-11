@@ -1,8 +1,12 @@
 ﻿using Domain.interfaces;
+using Domain.Model;
 using Domain.Response;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DataAccessLayerEF
@@ -15,13 +19,116 @@ namespace DataAccessLayerEF
         {
             _context = context;
         }
-        public async Task<DTOAnalyticsSummary> GetDataSummary(int ApplicationId, int UserId,int Months,int Years)
+        private Expression<Func<MApplicationDetails, bool>> ApplicationAccessFilter(
+    int applicationId, int userId)
+        {
+            return trnapp =>
+                // Admin → All applications
+                (applicationId == 0 && userId == 0)
+
+                // Admin → Specific application
+                || (applicationId > 0 && userId == 0
+                    && trnapp.ApplicationId == applicationId)
+
+                // User → Own application only
+                || (applicationId == 0 && userId > 0
+                    && trnapp.CreatedBy == userId)
+
+                // User → Own specific application
+                || (applicationId > 0 && userId > 0
+                    && trnapp.ApplicationId == applicationId
+                    && trnapp.CreatedBy == userId);
+        }
+        public async Task<DTOAnalyticsSummary> GetDataSummary(
+    int ApplicationId, int UserId, int Months, int Years)
+        {
+            var summary = new DTOAnalyticsSummary();
+            var accessFilter = ApplicationAccessFilter(ApplicationId, UserId);
+
+            summary.DTOApplicationMonthsWiseList =
+                await GetMonthWiseAsync(accessFilter, Years);
+
+            summary.DTOApplicationTotalCountList =
+                await GetTotalHitsAsync(accessFilter);
+
+            summary.DTOApplicationDayWiseList =
+                await GetDayWiseAsync(accessFilter, Months, Years);
+
+            return summary;
+        }
+        private async Task<List<DTOApplicationMonthsWise>> GetMonthWiseAsync(
+    Expression<Func<MApplicationDetails, bool>> accessFilter,
+    int year)
+        {
+            return await (
+                from trnapp in _context.trnapplicationDetails.Where(accessFilter)
+                join hits in _context.TrnMpplicationHitsSummary
+                    on trnapp.ApplicationId equals hits.ApplicationId
+                where hits.Date.Year == year
+                group hits by new
+                {
+                    trnapp.ApplicationName,
+                    hits.Date.Month,
+                    hits.Date.Year,
+                    hits.ApplicationId
+                } into g
+                select new DTOApplicationMonthsWise
+                {
+                    ApplicationName = g.Key.ApplicationName,
+                    MonthsName = CultureInfo.CurrentCulture
+                        .DateTimeFormat.GetMonthName(g.Key.Month),
+                    Years = g.Key.Year,
+                    TotalHits = g.Sum(x => x.TodayHits)
+                }).ToListAsync();
+        }
+        private async Task<List<DTOApplicationTotalCount>> GetTotalHitsAsync(
+            Expression<Func<MApplicationDetails, bool>> accessFilter)
+        {
+            return await (
+                from trnapp in _context.trnapplicationDetails.Where(accessFilter)
+                join hits in _context.trnmApplicationHits
+                    on trnapp.ApplicationId equals hits.ApplicationId
+                select new DTOApplicationTotalCount
+                {
+                    ApplicationName = trnapp.ApplicationName,
+                    TotalHits = hits.TotalHits,
+                    ColorCode = trnapp.ColorCode
+                }).ToListAsync();
+        }
+        private async Task<List<DTOApplicationDayWise>> GetDayWiseAsync(
+    Expression<Func<MApplicationDetails, bool>> accessFilter,
+    int month, int year)
+        {
+            return await (
+                from trnapp in _context.trnapplicationDetails.Where(accessFilter)
+                join hits in _context.TrnMpplicationHitsSummary
+                    on trnapp.ApplicationId equals hits.ApplicationId
+                where hits.Date.Year == year && hits.Date.Month == month
+                group hits by new
+                {
+                    trnapp.ApplicationName,
+                    hits.Date.Month,
+                    hits.Date.Day,
+                    trnapp.ApplicationId
+                } into g
+                select new DTOApplicationDayWise
+                {
+                    ApplicationName = g.Key.ApplicationName,
+                    MonthsName = CultureInfo.CurrentCulture
+                        .DateTimeFormat.GetMonthName(g.Key.Month),
+                    Month = g.Key.Month,
+                    Days = g.Key.Day,
+                    TotalHits = g.Sum(x => x.TodayHits)
+                }).ToListAsync();
+        }
+
+        public async Task<DTOAnalyticsSummary> GetDataSummary1(int ApplicationId, int UserId,int Months,int Years)
         {
             DTOAnalyticsSummary dTOAnalyticsSummary = new DTOAnalyticsSummary();
             var query = await (from trnapp in _context.trnapplicationDetails
                                join trnhitsum in _context.TrnMpplicationHitsSummary
                                on trnapp.ApplicationId equals trnhitsum.ApplicationId
-                               where trnhitsum.Date.Month == Months && trnhitsum.Date.Year==Years
+                               where  trnhitsum.Date.Year== Years //trnhitsum.Date.Month == Months &&
                                 &&
                                 (
                                     // Admin → All applications

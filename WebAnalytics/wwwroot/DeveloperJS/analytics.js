@@ -2,8 +2,8 @@
 let lineChartDays   ;
 let barChart;
 let barChartForConcurrentuser;
-var intervalInMilliseconds = 10000;
-var appColorMap = {};
+const intervalInMilliseconds = 10000;
+let appColorMap = {};
 $(document).ready(function () {
 
     const myHeadersIncrement = new Headers();
@@ -15,7 +15,7 @@ $(document).ready(function () {
         headers: myHeadersIncrement
     };
 
-    fetch("https://hitcounter.army.mil/api/ApplicationHit/IncrementHits", requestIncrement)
+    fetch("https://localhost:7144/api/ApplicationHit/IncrementHits", requestIncrement)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
@@ -27,7 +27,7 @@ $(document).ready(function () {
         headers: myHeadersIncrementStart
     };
 
-    fetch("https://hitcounter.army.mil/api/Application/ApplicationSessionStart", requestStart)
+    fetch("https://localhost:7144/api/Application/ApplicationSessionStart", requestStart)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
@@ -78,7 +78,7 @@ async function loadApplications(ddl) {
       const data = await res.json();
 
       const tbody = document.querySelector("#appsTable tbody");
-        var listItemddl = "";
+        let listItemddl = "";
         listItemddl += '<option value="0">All</option>';
       data.forEach((app, index) => {
           const tr = document.createElement("tr");
@@ -312,7 +312,7 @@ function BindchartDaysWiseHitCounter(dtoApplicationDayWiseList) {
             lineChartDays.destroy();
         }
         // Get the current month (0-indexed, January is 0, December is 11)
-        var currentMonth = new Date().getMonth();
+        let currentMonth = new Date().getMonth();
 
         // Set the value of the dropdown to the current month
        // $("#ddlMonths").val(currentMonth + 1); // Adding 1 because months are 1-based in the dropdown
@@ -452,7 +452,7 @@ function AllConcurrentuser(Id) {
         })
     };
 
-    fetch(`/Home/AllConcurrentuser/`, requestOptions)
+    fetch(`/Home/AllConcurrentuser`, requestOptions)
         .then((response) => response.text())
         .then((result) => {
 

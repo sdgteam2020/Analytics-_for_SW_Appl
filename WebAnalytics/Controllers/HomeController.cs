@@ -16,21 +16,18 @@ namespace WebAnalytics.Controllers
     {
         private readonly IApplicationSessions _applicationSessions;
         private readonly IApplication _application;
-        private readonly IConfiguration _configuration;
-        private readonly ICentralAnalyticsService _analyticsService;
-        private readonly ICentralAnalyticsServiceSummary _centralAnalyticsServiceSummary;
-        private readonly IApplicationHitsUserTrack _applicationHitsUserTrack;
+       
         private readonly IAnalyticsSummary _analyticsSummary;
         private readonly UserManager<ApplicationUser> _userManager;
-        public HomeController(ICentralAnalyticsService analyticsService, IApplication application, IApplicationHitsUserTrack applicationHitsUserTrack, IApplicationSessions applicationSessions, ICentralAnalyticsServiceSummary centralAnalyticsServiceSummary, IAnalyticsSummary analyticsSummary, IConfiguration configuration, UserManager<ApplicationUser> userManager)
+        public HomeController(IApplication application, IApplicationSessions applicationSessions, IAnalyticsSummary analyticsSummary, UserManager<ApplicationUser> userManager)
         {
-            _analyticsService = analyticsService;
+           
             _application = application;
-            _applicationHitsUserTrack = applicationHitsUserTrack;
+          
             _applicationSessions = applicationSessions;
-            _centralAnalyticsServiceSummary = centralAnalyticsServiceSummary;
+            
             _analyticsSummary = analyticsSummary;
-            _configuration = configuration;
+           
             _userManager = userManager;
         }
         public IActionResult Index()
@@ -59,9 +56,13 @@ namespace WebAnalytics.Controllers
         /// </returns>
         public async Task<IActionResult> ConcurrentuserList(int ApplicationId)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var ret = await _applicationSessions.ConcurrentuserList(ApplicationId);
             return Json(ret);
         }
+
 
         /// <summary>
         /// Retrieves a date-specific concurrent user list for a given application.
@@ -74,6 +75,9 @@ namespace WebAnalytics.Controllers
         /// </returns>
         public async Task<IActionResult> ConcurrentuserListDatewise(string ApplicationName, DateTime date)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var data = await _application.GetApplicationByName(ApplicationName);
             if (data != null)
             {
@@ -87,6 +91,10 @@ namespace WebAnalytics.Controllers
         }
         public async Task<IActionResult> GetDataSummary([FromBody]  ApplicationKeyRequest Data)
         {
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized("User is not authenticated.");
@@ -134,6 +142,8 @@ namespace WebAnalytics.Controllers
        
         public async Task<IActionResult> AllConcurrentuser([FromBody] ApplicationKeyRequest Data)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized("User is not authenticated.");

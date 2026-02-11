@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Newtonsoft.Json.Serialization;
+using System;
 using WebAnalytics.CustomMiddleware;
 using WebAnalytics.Helpers;
 var builder = WebApplication.CreateBuilder(args);
@@ -126,6 +127,26 @@ if (!app.Environment.IsDevelopment())
 }
 app.Use(async (ctx, next) =>
 {
+    ctx.Response.OnStarting(() =>
+    {
+        ctx.Response.Headers.Remove("Expires");
+
+        return Task.CompletedTask;
+    });
+    // ========== 0) BLOCK DANGEROUS HTTP METHODS FIRST ==========
+    var blockedMethods = new[] { "OPTIONS", "TRACE", "TRACK", "CONNECT" };
+
+    if (blockedMethods.Contains(ctx.Request.Method, StringComparer.OrdinalIgnoreCase))
+    {
+        // Log for monitoring (optional)
+        app.Logger.LogWarning($"Security: Blocked {ctx.Request.Method} request to {ctx.Request.Path}");
+
+        ctx.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
+        ctx.Response.Headers["Allow"] = "GET, HEAD, POST"; // Only allowed methods
+        await ctx.Response.WriteAsync("Method Not Allowed");
+        return; // Stop further processing
+    }
+
     // 1) Content Security Policy
     ctx.Response.Headers["Content-Security-Policy"] =
         //"default-src 'self'; " +
@@ -156,8 +177,11 @@ app.Use(async (ctx, next) =>
     // Hide tech details where possible
     ctx.Response.Headers.Remove("X-Powered-By");
     ctx.Response.Headers.Remove("x-aspnet-version");
-
+ 
     await next();
+
+ 
+   
 });
 app.UseHttpsRedirection(); 
 app.UseCookiePolicy(new CookiePolicyOptions

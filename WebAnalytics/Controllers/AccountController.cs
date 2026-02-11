@@ -16,16 +16,16 @@ namespace WebAnalytics.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
+        
         private readonly IRank _rank;
         private readonly IUsers _users;
         public const string SessionKeySalt = "_Salt";
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,IRank rank, IUsers users)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager,IRank rank, IUsers users)
         {
             _signInManager = signInManager;
             _userManager = userManager;
            
-            _roleManager = roleManager;
+           
             _rank=rank;
             _users=users;
         }
@@ -47,101 +47,95 @@ namespace WebAnalytics.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(DTOIMLoginRequest request)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(request);
+
+            DecryptCredentials(request);
+
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user == null)
             {
-                string? GetSalt = HttpContext.Session.GetString(SessionKeySalt); // Get Salt from Session
-                if (GetSalt != null)
-                {
-                    ViewBag.hdns = GetSalt;
-                    string Password = AESEncrytDecry.DecryptAES(request.Password, GetSalt);  //decrypt password
-                    request.Password = Password;
-                    string username = AESEncrytDecry.DecryptAES(request.UserName, GetSalt);  //decrypt password
-                    request.UserName = username;
-                }
-                // Find the user by Domain ID (or username)
-                var user = await _userManager.FindByNameAsync(request.UserName); // Or use FindByEmailAsync, depending on your model
-
-                if (user != null)
-                {
-
-                    // Attempt to sign in the user with the provided password
-                    var result = await _signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: true);
-
-                    if (result.Succeeded)
-                    {
-                        HttpContext.Session.Clear();
-
-                        // Delete the session cookie so ASP.NET Core issues a NEW session ID
-                        var sessionCookieName = ".AspNetCore.Session"; // or ".MOU.Session" if you renamed it
-                        if (Request.Cookies.ContainsKey(sessionCookieName))
-                        {
-                            Response.Cookies.Delete(sessionCookieName);
-                        }
-
-
-                        await _userManager.UpdateSecurityStampAsync(user);
-
-                        // 2) Re-issue THIS session’s cookie so it contains the fresh stamp
-                        await _signInManager.SignOutAsync();
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-
-                      
-                        var ret = await _rank.GetByshort(user.RankId);
-
-                        var DTOSession = new DTOSession
-                        {
-                            UserId = user.Id,
-                            RoleName = string.Join(",", await _userManager.GetRolesAsync(user)),
-                            UserName = user.UserName,
-                            Name = user.Name,
-                            
-                            RankName = ret.RankAbbreviation,
-                        };
-
-                        SessionHeplers.SetObject(HttpContext.Session, "Users", DTOSession);
-                        var dto = SessionHeplers.GetObject<DTOSession>(HttpContext.Session, "Users");
-
-
-                        if (!user.Active)
-                        {
-                            return RedirectToAction("ContactUs", "Account");
-                        }
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else if (result.IsLockedOut)
-                    {
-                        ModelState.AddModelError(string.Empty, "Account Locked Out Please Try after 10 minutes.");
-
-
-                    }
-                    else if (result.IsNotAllowed)
-                    {
-                        ModelState.AddModelError(string.Empty, "Already Login \" + user.UserName + \" Please Try Some Time.");
-
-
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Not Valid User / Password. Access Failed Count " + user.AccessFailedCount + " Max Access Attempts 3");
-
-
-                    }
-                    //else
-                    //{
-                    //    // If login failed (incorrect password), add a model error
-                    //    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    //}
-                }
-                else
-                {
-                    // User not found, redirect to the Registration page
-                    TempData["UserName"] = request.UserName;
-                    return RedirectToAction("Register", "Account");
-                }
+                TempData["UserName"] = request.UserName;
+                return RedirectToAction("Register", "Account");
             }
 
-            // If the model is invalid or login failed, return the login view with errors
-            return View(request);
+            var result = await _signInManager.PasswordSignInAsync(
+                user, request.Password, false, lockoutOnFailure: true);
+
+            if (!result.Succeeded)
+                return HandleLoginFailure(result, user, request);
+
+            await CompleteSuccessfulLoginAsync(user);
+
+            if (!user.Active)
+                return RedirectToAction("ContactUs", "Account");
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private void DecryptCredentials(DTOIMLoginRequest request)
+        {
+            var salt = HttpContext.Session.GetString(SessionKeySalt);
+            if (salt == null) return;
+
+            ViewBag.hdns = salt;
+
+            request.Password = AESEncrytDecry.DecryptAES(request.Password, salt);
+            request.UserName = AESEncrytDecry.DecryptAES(request.UserName, salt);
+        }
+        private IActionResult HandleLoginFailure(
+    Microsoft.AspNetCore.Identity.SignInResult result,
+    ApplicationUser user,
+    DTOIMLoginRequest request)
+{
+    if (result.IsLockedOut)
+    {
+        ModelState.AddModelError(
+            string.Empty,
+            "Account Locked Out. Please try after 10 minutes.");
+    }
+    else if (result.IsNotAllowed)
+    {
+        ModelState.AddModelError(
+            string.Empty,
+            $"Already Login \"{user.UserName}\". Please try later.");
+    }
+    else
+    {
+        ModelState.AddModelError(
+            string.Empty,
+            $"Not Valid User / Password. Access Failed Count {user.AccessFailedCount} Max Access Attempts 3");
+    }
+
+    return View(request);
+}
+        private async Task CompleteSuccessfulLoginAsync(ApplicationUser user)
+        {
+            HttpContext.Session.Clear();
+
+            const string sessionCookieName = ".AspNetCore.Session";
+            if (Request.Cookies.ContainsKey(sessionCookieName))
+            {
+                Response.Cookies.Delete(sessionCookieName);
+            }
+
+            await _userManager.UpdateSecurityStampAsync(user);
+
+            await _signInManager.SignOutAsync();
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            var rank = await _rank.GetByshort(user.RankId);
+
+            var sessionDto = new DTOSession
+            {
+                UserId = user.Id,
+                RoleName = string.Join(",", await _userManager.GetRolesAsync(user)),
+                UserName = user.UserName,
+                Name = user.Name,
+                RankName = rank.RankAbbreviation
+            };
+
+            SessionHeplers.SetObject(HttpContext.Session, "Users", sessionDto);
         }
 
         // Registration Action (GET)
@@ -162,88 +156,103 @@ namespace WebAnalytics.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(DTORegistraionRequest model)
         {
-            bool ActiveStatus = false;
-            
-            if(model.RankId==null  || model.RankId==0)
+            if (!IsRankValid(model))
+                return View(model);
+
+            ViewBag.UserName = model.UserName;
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            DecryptConfirmPassword(model);
+
+            if (await UserExistsAsync(model.UserName))
             {
-                ModelState.AddModelError(string.Empty, "Select Rank.");
+                ModelState.AddModelError(string.Empty, "User already exists.");
                 return View(model);
             }
-            ViewBag.UserName = model.UserName;
-            if (ModelState.IsValid)
+
+            var user = CreateUser(model);
+
+            var result = await _userManager.CreateAsync(user, model.ConfirmPassword);
+            if (!result.Succeeded)
             {
-                string? GetSalt = HttpContext.Session.GetString(SessionKeySalt); // Get Salt from Session
-                if (GetSalt != null)
-                {
-                    ViewBag.hdns = GetSalt;
-                    string Password = AESEncrytDecry.DecryptAES(model.ConfirmPassword, GetSalt);  //decrypt password
-                    model.ConfirmPassword = Password;
-                }
-                int userId = Convert.ToInt32(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var user = new ApplicationUser
-                {
-                    
-                    RankId = model.RankId,
-                    Name = model.Name,
-                    Active = ActiveStatus,
-                    Updatedby = userId,
-                    UpdatedOn = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("India Standard Time")),
-                   
-                    UserName = model.UserName.ToLower(),
-                    Email = model.UserName.ToLower() + "@army.mil",
-                   
-
-                };
-                // Check if user already exists
-                var existingUser = await _userManager.FindByNameAsync(model.UserName);
-                if (existingUser != null)
-                {
-                    ModelState.AddModelError(string.Empty, "User already exists.");
-                    return View(model);
-                }
-
-                var result = await _userManager.CreateAsync(user, model.ConfirmPassword);
-
-                if (result.Succeeded)
-                {
-
-                   
-
-                    await _userManager.AddToRoleAsync(user, "User");
-
-                   // await _signInManager.SignInAsync(user, isPersistent: false);
-
-
-                    var ret = await _rank.GetByshort(user.RankId);
-                    if (!user.Active)
-                    {
-
-                        return RedirectToAction("ContactUs", "Account");
-                    }
-                    var DTOSession = new DTOSession
-                    {
-                        RoleName = string.Join(",", await _userManager.GetRolesAsync(user)),
-                        UserName = user.UserName,
-                        Name = user.Name,
-                        ArmyNO = user.Name,
-                        RankName = ret.RankAbbreviation,
-                       
-
-                    };
-                    SessionHeplers.SetObject(HttpContext.Session, "Users", DTOSession);
-                  
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
+                AddErrors(result);
+                return View(model);
             }
-            return View(model);
+
+            await _userManager.AddToRoleAsync(user, "User");
+
+            if (!user.Active)
+                return RedirectToAction("ContactUs", "Account");
+
+            await CreateUserSessionAsync(user);
+
+            return RedirectToAction("Index", "Home");
         }
+        private bool IsRankValid(DTORegistraionRequest model)
+        {
+            if (model.RankId == null || model.RankId == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Select Rank.");
+                return false;
+            }
+            return true;
+        }
+        private void DecryptConfirmPassword(DTORegistraionRequest model)
+        {
+            var salt = HttpContext.Session.GetString(SessionKeySalt);
+            if (salt == null) return;
+
+            ViewBag.hdns = salt;
+            model.ConfirmPassword = AESEncrytDecry
+                .DecryptAES(model.ConfirmPassword, salt);
+        }
+        private async Task<bool> UserExistsAsync(string userName)
+        {
+            return await _userManager.FindByNameAsync(userName) != null;
+        }
+        private ApplicationUser CreateUser(DTORegistraionRequest model)
+        {
+            int userId = Convert.ToInt32(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return new ApplicationUser
+            {
+                RankId = model.RankId,
+                Name = model.Name,
+                Active = false,
+                Updatedby = userId,
+                UpdatedOn = TimeZoneInfo.ConvertTimeFromUtc(
+                    DateTime.UtcNow,
+                    TimeZoneInfo.FindSystemTimeZoneById("India Standard Time")),
+                UserName = model.UserName.ToLower(),
+                Email = model.UserName.ToLower() + "@army.mil"
+            };
+        }
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+        private async Task CreateUserSessionAsync(ApplicationUser user)
+        {
+            var rank = await _rank.GetByshort(user.RankId);
+
+            var session = new DTOSession
+            {
+                RoleName = string.Join(",", await _userManager.GetRolesAsync(user)),
+                UserName = user.UserName,
+                Name = user.Name,
+                ArmyNO = user.Name,
+                RankName = rank.RankAbbreviation
+            };
+
+            SessionHeplers.SetObject(HttpContext.Session, "Users", session);
+        }
+
         public async Task<IActionResult> Logout()
         {
             var user = await _userManager.GetUserAsync(User);

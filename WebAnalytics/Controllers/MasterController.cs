@@ -18,6 +18,9 @@ namespace WebAnalytics.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllMMaster(DTOMasterRequest Data)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             try
             {
                 var ret = await unitOfWork.GetAllMMaster(Data);

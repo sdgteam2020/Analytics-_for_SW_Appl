@@ -99,9 +99,9 @@
 
 
     $(document).on("click", ".btn-Edit-code", function (e) {
-        var editBtn = $(e.target).closest(".btn-Edit-code");
+        let editBtn = $(e.target).closest(".btn-Edit-code");
        
-        var applicationId = editBtn.data("key");
+        let applicationId = editBtn.data("key");
         $("#ApplicationId").val(applicationId);
         $("#ApplicationName").val($(this).closest('tr').find('#ApplicationName').html())
         $("#Description").val($(this).closest('tr').find('#Description').html())
@@ -109,7 +109,7 @@
     });
 
     $(document).on("click", ".btn-view-code", function (e) {
-        var editBtn = $(e.target).closest(".btn-view-code");
+        let editBtn = $(e.target).closest(".btn-view-code");
 
         const key = editBtn.data("key");
         // Ensure apiBase ends with a trailing slash

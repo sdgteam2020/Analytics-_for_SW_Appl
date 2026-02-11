@@ -8,8 +8,7 @@ namespace WebAnalytics.CustomMiddleware
     public class GlobalExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger<GlobalExceptionMiddleware> _logger;
-       
+        
         private static readonly PathString[] _noRedirect =
         {
         "/Account/Login",
@@ -19,11 +18,11 @@ namespace WebAnalytics.CustomMiddleware
         };
 
         public GlobalExceptionMiddleware(
-            RequestDelegate next,
-            ILogger<GlobalExceptionMiddleware> logger)
+            RequestDelegate next
+            )
         {
             _next = next;
-            _logger = logger;
+            
            
         }
 

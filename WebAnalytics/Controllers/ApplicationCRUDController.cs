@@ -36,82 +36,105 @@ namespace WebAnalytics.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddApplication(DTORequestApplicationDetails application)
         {
-            if (ModelState.IsValid)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                    return Unauthorized("User is not authenticated.");
+            if (!ModelState.IsValid)
+                return InvalidModelStateResponse();
 
-                var roles = await _userManager.GetRolesAsync(user);
-                var roleName = roles.FirstOrDefault()?.ToLower();
+            if (application == null)
+                return BadRequest("Invalid application data.");
 
-                if (application == null)
-                {
-                    return BadRequest("Invalid application data.");
-                }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized("User is not authenticated.");
 
-                if (application.ApplicationId == 0)
-                {
-                    // Create
-                    var applicationexits = await _iapplication.GetApplicationByName(application.ApplicationName);
-                    if (applicationexits != null)
-                    {
-                        return BadRequest("Application with this name already exists.");
-                    }
-                   
-                    var mApplicationDetails = new MApplicationDetails
-                    {
-                        ApplicationKey = Guid.NewGuid().ToString(), // Generate unique key
-                        ApplicationName = application.ApplicationName,
-                        Description = application.Description,
-                        CreatedOn = DateTime.Now,
-                        UpdatedOn = DateTime.Now,
-                        CreatedBy = Convert.ToInt32(userId), // TODO: Replace with current user id/claim
-                        UpdatedBy = Convert.ToInt32(userId), // TODO: Replace with current user id/claim
-                        IsActive = true,
-                        IsDeleted = false,
-                        origin = application.origin,
-                        ColorCode = ColorHelper.GetRandomHexColor()
-                    };
-                    await _iapplication.AddWithReturn(mApplicationDetails);
-                    return Json(new DTOGenericResponse<object>(ConnKeyConstants.Success, ConnKeyConstants.SaveMessage, null));
-                    
-                }
-                else
-                {
-                    // Update
-                    var Data = await _iapplication.Get(application.ApplicationId);
-                    Data.ApplicationName = application.ApplicationName;
-                    Data.Description = application.Description;
-                    Data.UpdatedOn = DateTime.Now;
-                    Data.origin = application.origin;
-                    Data.UpdatedBy = Convert.ToInt32(userId);
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var roleName = await GetUserRoleAsync(user);
 
-                    if(Convert.ToInt32(userId)==Data.CreatedBy || roleName=="admin")
-                    {
-                        await _iapplication.UpdateWithReturn(Data);
-                        return Json(new DTOGenericResponse<object>(ConnKeyConstants.Success, ConnKeyConstants.UpdateMessage, null));
-                    }
-                    else
-                    {
-                        return BadRequest("Your Not Authorize user for this application.");
-                    }
+            if (application.ApplicationId == 0)
+                return await CreateApplicationAsync(application, userId);
 
-                   
-                   
-                }
-            }
-            else
-            {
-                var error = ModelState.Where(x => x.Value?.Errors?.Count > 0)
-                                               .SelectMany(x => x.Value!.Errors)
-                                               .Select(e => e.ErrorMessage)
-                                               .ToList();
-
-                return Json(new DTOGenericResponse<object>(ConnKeyConstants.IncorrectData, ConnKeyConstants.IncorrectDataMessage, error));
-            }
+            return await UpdateApplicationAsync(application, userId, roleName);
         }
+        private IActionResult InvalidModelStateResponse()
+        {
+            var errors = ModelState
+                .Where(x => x.Value?.Errors?.Count > 0)
+                .SelectMany(x => x.Value!.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+
+            return Json(new DTOGenericResponse<object>(
+                ConnKeyConstants.IncorrectData,
+                ConnKeyConstants.IncorrectDataMessage,
+                errors));
+        }
+        private async Task<string?> GetUserRoleAsync(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.FirstOrDefault()?.ToLower();
+        }
+        private async Task<IActionResult> CreateApplicationAsync(
+    DTORequestApplicationDetails application,
+    int userId)
+        {
+            var existing = await _iapplication
+                .GetApplicationByName(application.ApplicationName);
+
+            if (existing != null)
+                return BadRequest("Application with this name already exists.");
+
+            var entity = new MApplicationDetails
+            {
+                ApplicationKey = Guid.NewGuid().ToString(),
+                ApplicationName = application.ApplicationName,
+                Description = application.Description,
+                CreatedOn = DateTime.Now,
+                UpdatedOn = DateTime.Now,
+                CreatedBy = userId,
+                UpdatedBy = userId,
+                IsActive = true,
+                IsDeleted = false,
+                origin = application.origin,
+                ColorCode = ColorHelper.GetRandomHexColor()
+            };
+
+            await _iapplication.AddWithReturn(entity);
+
+            return Json(new DTOGenericResponse<object>(
+                ConnKeyConstants.Success,
+                ConnKeyConstants.SaveMessage,
+                null));
+        }
+        private async Task<IActionResult> UpdateApplicationAsync(
+    DTORequestApplicationDetails application,
+    int userId,
+    string? roleName)
+        {
+            var data = await _iapplication.Get(application.ApplicationId);
+
+            data.ApplicationName = application.ApplicationName;
+            data.Description = application.Description;
+            data.UpdatedOn = DateTime.Now;
+            data.origin = application.origin;
+            data.UpdatedBy = userId;
+
+            if (!IsAuthorizedToUpdate(data, userId, roleName))
+                return BadRequest("Your Not Authorize user for this application.");
+
+            await _iapplication.UpdateWithReturn(data);
+
+            return Json(new DTOGenericResponse<object>(
+                ConnKeyConstants.Success,
+                ConnKeyConstants.UpdateMessage,
+                null));
+        }
+        private bool IsAuthorizedToUpdate(
+            MApplicationDetails data,
+            int userId,
+            string? roleName)
+        {
+            return data.CreatedBy == userId || roleName == "admin";
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> GetApplication()
