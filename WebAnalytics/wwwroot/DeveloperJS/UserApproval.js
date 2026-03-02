@@ -1,6 +1,94 @@
 ﻿$(document).ready(function () {
     GetAllUser();
-    
+
+    $(document).on('click', '.updateuser', async function () {
+      
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You want to update Status",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        });
+        if (result.isConfirmed) {
+            const userId = $(this).data('id');
+
+            let isActive = true;
+            
+            if ($(this).val().trim() == "Active")
+                isActive = false;
+          
+
+
+
+            const token = $('input[name="__RequestVerificationToken"]').val();
+
+            try {
+                const resp = await fetch("/Account/UpdateApprovalStatus", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",  // Ensure content-type is set to JSON
+                        "RequestVerificationToken": token   // Pass the CSRF token in the header
+                    },
+                    body: JSON.stringify({
+                        Id: userId,
+                        Active: isActive
+                    })
+                });
+
+                if (!resp.ok) {
+                    // non-200 status (e.g., 400/500)
+                    const text = await resp.text();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "Save failed.\n" + text,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+
+                    return;
+                }
+
+                // expecting your DTOGenericResponse JSON from the controller
+                const data = await resp.json();
+                if (data.Code == 200) {
+                    GetAllUser();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: data.Message || "Update successfully.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                } else {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: data.Message || "Update failed.",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+
+                }
+            } catch (err) {
+
+                Swal.fire({
+                    position: "top-end",
+                    icon: "error",
+                    title: "Network error while saving",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
+
+    });
 });
 
 
@@ -21,7 +109,7 @@ function GetAllUser() {
                     // Set the slider background color based on Active status
                     let sliderColor = item.Active ? "bg-success" : "bg-danger";
                     let sliderChecked = item.Active ? "checked" : "";
-
+                    let isactive = item.Active ? "Active" : "Deactive";
                     return `
                         <tr>
                             <td class="align-middle">${index + 1}</td>
@@ -32,11 +120,13 @@ function GetAllUser() {
                            
                             <td class="align-middle">
                              <div class="d-flex align-items-center gap-2">
-                              <label class="switch mb-0">
-                             <div class="form-check form-switch">
-                              <input class="form-check-input updateuser ${sliderColor}" type="checkbox" role="switch" data-id="${item.Id}" ${sliderChecked}>
-                              
-                            </div></label>
+                             <div class="form-check form-switch d-flex align-items-center gap-2">
+                        <input class="btn text-white updateuser ${sliderColor}"
+                               type="button"
+                               id="userSwitch_${item.Id}"
+                               data-id="${item.Id}"
+                               value=" ${isactive}" />
+                               </div>
                             
                             </div>
                           </td>
@@ -64,87 +154,6 @@ function GetAllUser() {
 }
 
 
-$(document).on('change', '.updateuser', async function () {  
-
-    const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You want to update Status",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes"
-    });
-    if (result.isConfirmed)
-    {
-        const userId = $(this).data('id');
-        const isActive = $(this).prop('checked');
-        const token = $('input[name="__RequestVerificationToken"]').val();
-       
-        try {
-            const resp = await fetch("/Account/UpdateApprovalStatus", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",  // Ensure content-type is set to JSON
-                    "RequestVerificationToken": token   // Pass the CSRF token in the header
-                },
-                body: JSON.stringify({
-                    Id: userId,
-                    Active: isActive
-                })
-            });
-
-            if (!resp.ok) {
-                // non-200 status (e.g., 400/500)
-                const text = await resp.text();
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "Save failed.\n" + text,
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-              
-                return;
-            }
-
-            // expecting your DTOGenericResponse JSON from the controller
-            const data = await resp.json();
-            if (data.Code == 200) {
-                GetAllUser();
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: data.Message || "Update successfully.",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-              
-            } else {
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: data.Message || "Update failed.",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-                
-            }
-        } catch (err) {
-          
-            Swal.fire({
-                position: "top-end",
-                icon: "error",
-                title: "Network error while saving",
-                showConfirmButton: false,
-                timer: 1500
-            }); 
-        }
-    }
-    
-});
 
 
 

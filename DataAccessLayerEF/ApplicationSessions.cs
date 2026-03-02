@@ -56,13 +56,13 @@ namespace DataAccessLayerEF
             var ret = await (from app in _context.trnapplicationDetails
                              join session in _context.trnapplicationSessions on app.ApplicationId equals session.ApplicationId
                              where app.ApplicationKey == ApplicationKey &&
-                                   session.UserId == UserId &&
+                                   session.IpAddress == UserId &&
                                    session.IsActive == true && session.SessionStartTime.Date == DateTime.Now.Date
                              select new MApplicationSessions
                              {
                                  ApplicationSessionsId = session.ApplicationSessionsId,
                                  ApplicationId = app.ApplicationId,
-                                 UserId = session.UserId,
+                               
                                  SessionStartTime = session.SessionStartTime,
                                  SessionEndTime = session.SessionEndTime,
                                  IsActive = session.IsActive,

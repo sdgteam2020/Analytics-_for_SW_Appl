@@ -70,7 +70,6 @@ namespace WebAnalytics.Controllers
                 var mApplicationSessions = new MApplicationSessions
                 {
                     ApplicationId = Application.ApplicationId,
-                    UserId = DomainId,
                     IpAddress = UserId,
                     SessionStartTime = DateTime.Now,
                     IsActive = true,
@@ -78,7 +77,7 @@ namespace WebAnalytics.Controllers
                 };
 
                 // If a session exists for this (ApplicationKey, DomainId), toggle active & mirror.
-                var ret = await _applicationSessions.GetApplicationBySessions(ApplicationKey, DomainId);
+                var ret = await _applicationSessions.GetApplicationBySessions(ApplicationKey, UserId);
                 if (ret != null && ret.ApplicationSessionsId > 0)
                 {
                     ret.IsActive = true;
@@ -91,7 +90,6 @@ namespace WebAnalytics.Controllers
                     {
                         ApplicationSessionsId = result.ApplicationSessionsId,
                         ApplicationId = result.ApplicationId,
-                        UserId = result.UserId,
                         SessionStartTime = result.SessionStartTime,
                         SessionEndTime = result.SessionEndTime ?? DateTime.MinValue,
                         IsActive = result.IsActive,
@@ -105,7 +103,6 @@ namespace WebAnalytics.Controllers
                     MApplicationHitsUserTrack applicationHitsUserTrack = new MApplicationHitsUserTrack
                     {
                         ApplicationId = Application.ApplicationId,
-                        UserId = DomainId,
                         HitDate = DateTime.Now,
                         IpAddress = UserId // Store the IP address of the user
                     };

@@ -607,8 +607,8 @@ async function showPopup(applicationId, label) {
                 listItem.innerHTML = `
                     <div class="marker"></div>
                     <div class="card">
-                        <div class="time">Domain ID / IP Address : ${item.UserId}</div>
-                        <h4>IP Address  : ${item.IpAddress}</h4>
+                        <div class="time">IP Address : ${item.IpAddress}</div>
+          
                         <p>Last Updated : ${date.toDDMMYYYY_HHMMSS()}</p>
                     </div>
                 `;
@@ -693,8 +693,8 @@ async function showPopupdatewise(Appname, day) {
                 listItem.innerHTML = `
                     <div class="marker"></div>
                     <div class="card">
-                        <div class="time">Domain ID / IP Address : ${item.UserId}</div>
-                        <h4>IP Address  : ${item.IpAddress}</h4>
+                        <div class="time">IP Address : ${item.IpAddress}</div>
+                       
                        <p>Time : ${date.toHHMMSS()}</p>
                     </div>
                 `;

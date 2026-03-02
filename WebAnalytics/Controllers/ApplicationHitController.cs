@@ -42,7 +42,7 @@ namespace WebAnalytics.Controllers
             if (string.IsNullOrEmpty(ApplicationKey))
                 return BadRequest("X-API-KEY header missing");
 
-            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. https://clientapp.com
+            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. link_clientapp.com
             // Get the IP address of the caller
             var IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             // Get the IP address of the caller
@@ -57,7 +57,7 @@ namespace WebAnalytics.Controllers
                 MApplicationHitsUserTrack applicationHitsUserTrack = new MApplicationHitsUserTrack
                 {
                     ApplicationId = Application.ApplicationId,
-                    UserId = DomainId,
+                   
                     HitDate = DateTime.Now,
                     IpAddress = IpAddress // Store the IP address of the user
                 };
@@ -88,7 +88,7 @@ namespace WebAnalytics.Controllers
         {
             if (string.IsNullOrEmpty(ApplicationKey))
                 return BadRequest("X-API-KEY header missing");
-            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. https://clientapp.com
+            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. link_clientapp.com
             var Application = await _iapplication.CheckApplicationKey(ApplicationKey, origin);
             if (Application != null && Application.ApplicationId > 0)
             {
@@ -110,7 +110,7 @@ namespace WebAnalytics.Controllers
         {
             if (string.IsNullOrEmpty(ApplicationKey))
                 return BadRequest("X-API-KEY header missing");
-            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. https://clientapp.com
+            var origin = Request.Headers["Origin"].FirstOrDefault();   // e.g. link_clientapp.com
             DTOHitsWithActiveUserResponse dTOHitsWithActiveUserResponse = new DTOHitsWithActiveUserResponse();
             var Application = await _iapplication.CheckApplicationKey(ApplicationKey, origin);
             if (Application != null && Application.ApplicationId > 0)

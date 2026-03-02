@@ -12,9 +12,7 @@ namespace Domain.CommonModel
         public int Id { get; set; }
         public int ApplicationSessionsId { get; set; }
         public int ApplicationId { get; set; }
-        [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string UserId { get; set; }
+     
         [Required]
         [Column(TypeName = "varchar(100)")]
         public string IpAddress { get; set; }  // User identifier (can be session ID or user ID)

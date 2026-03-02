@@ -18,7 +18,7 @@ namespace DataAccessLayerEF
 
             // Check if a hit for the same user and application exists today
             var ret = await _context.trnApplicationHitsUserTrack
-                       .AnyAsync(hit => hit.UserId == Data.UserId &&
+                       .AnyAsync(hit => hit.IpAddress == Data.IpAddress &&
                         hit.ApplicationId == Data.ApplicationId &&
                         hit.HitDate.Date == Data.HitDate.Date);
             return ret;

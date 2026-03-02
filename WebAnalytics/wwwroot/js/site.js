@@ -1,5 +1,5 @@
 ﻿
- let apiBase1 = "https://hitcounter.army.mil/api/";
+
 $(document).ready(function () {
     let currentPath = window.location.pathname.toLowerCase();
 

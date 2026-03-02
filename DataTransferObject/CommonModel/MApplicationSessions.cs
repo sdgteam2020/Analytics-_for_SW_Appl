@@ -12,9 +12,7 @@ namespace Domain.CommonModel
         public int ApplicationSessionsId { get; set; }  // Primary key with auto-increment
 
         public int ApplicationId { get; set; }  // Application identifier (unique key)
-        [Required]
-        [Column(TypeName = "varchar(100)")]
-        public string UserId { get; set; }  // User identifier (can be session ID or user ID)
+
         [Required]
         [Column(TypeName = "varchar(100)")]
         public string IpAddress { get; set; }  // User identifier (can be session ID or user ID)

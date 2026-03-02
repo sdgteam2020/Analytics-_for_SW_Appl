@@ -6,7 +6,7 @@ const requestEND = {
     headers: myHeadersIncrementEND
 };
 
-fetch("https://hitcounter.army.mil/api/Application/ApplicationSessionEnd", requestEND)
+fetch("link_hitcounter.army.mil/api/Application/ApplicationSessionEnd", requestEND)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));

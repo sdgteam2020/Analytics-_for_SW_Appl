@@ -122,7 +122,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see link_aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 app.Use(async (ctx, next) =>
@@ -220,7 +220,7 @@ app.UseMiddleware<OriginValidationMiddleware>();
 //app.UseUrlRefreshMiddleware();
 
 app.MapStaticAssets();
-//https://localhost:7144/swagger/index.html
+//link_localhost:7144/swagger/index.html
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
