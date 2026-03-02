@@ -18,27 +18,30 @@
                 <div class="form-group row mb-3">
                     <label asp-for="ApplicationName" class="col-md-6 col-form-label"></label>
                     <div class="col-md-6">
-                        <input asp-for="ApplicationName" class="form-control" required />
+                        <input asp-for="ApplicationName" class="form-control" required maxlength="50" />
                         <span asp-validation-for="ApplicationName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mb-3">
                     <label asp-for="Description" class="col-md-6 col-form-label"></label>
                     <div class="col-md-6">
-                        <input asp-for="Description" class="form-control" required />
+                        <input asp-for="Description" class="form-control" required maxlength="50" />
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mb-3">
                     <label asp-for="origin" class="col-md-3 col-form-label"></label>
                     <div class="col-md-9">
-                        <input asp-for="origin" class="form-control" required />
+                        <input asp-for="origin" class="form-control" required maxlength="50" />
                         <span asp-validation-for="origin" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row mb-3">
                     <button type="submit" class="btn btn-primary mt-0" id="btnsave">Save</button>
-                   
+                  
+                </div>
+                <div class="form-group row mb-3 m-lg-2">
+                    <span class="alert alert-danger errormsg d-none"></span>
                 </div>
             </form>
 

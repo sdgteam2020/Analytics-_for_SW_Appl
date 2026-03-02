@@ -71,11 +71,7 @@ namespace WebAnalytics.CustomMiddleware
                     context.Response.Clear();
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        error = "An unexpected error occurred.",
-
-                    });
+                    context.Response.Redirect("/Account/Error/" + data.Data);
                     return;
                 }
 
@@ -85,13 +81,14 @@ namespace WebAnalytics.CustomMiddleware
                 {
                     context.Response.Clear();
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    await context.Response.WriteAsync("An unexpected error occurred. Please try again later.");
+                    //await context.Response.WriteAsync("An unexpected error occurred. Please try again later.");
+                    context.Response.Redirect("/Account/Error/" + data.Data);
                     return;
                 }
 
                 // Redirect to login (or an error page if you prefer)
                 context.Response.Clear();
-                context.Response.Redirect("Account/Error/"+ data.Data);
+                context.Response.Redirect("/Account/Error/"+ data.Data);
                 return;
             }
         }

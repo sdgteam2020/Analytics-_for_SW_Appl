@@ -7,7 +7,16 @@
     })
 
     $("#appForm").on("submit", async function (e) {
+        $(".errormsg").html("");
+        $(".errormsg").addClass("d-none");
+        // Remove Bootstrap invalid class
+        $(".is-invalid").removeClass("is-invalid");
 
+        // Clear validation messages
+        $("[data-valmsg-for]")
+            .removeClass("field-validation-error")
+            .addClass("field-validation-valid")
+            .text("");
         e.preventDefault(); // stop normal submit
 
         // client-side validation (optional but nice)
@@ -50,6 +59,8 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        $(".errormsg").html("Save failed.\n" + text);
+                        $(".errormsg").removeClass("d-none");
                         return;
                     }
 
@@ -65,16 +76,54 @@
                             showConfirmButton: false,
                             timer: 3500
                         });
+                        $(".errormsg").html(data.Message);
+                        (".errormsg").addClass("d-none");
+                        resetappication()
                         loadApplications();
 
                     } else if (data.Code === 4) {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "error",
-                            title: data.Message + "\n " + data.Data,
-                            showConfirmButton: false,
-                            timer: 3500
-                        });
+                        let errorText = data.Data
+                            .map(e => e.Field + " : " + e.Message)
+                            .join(", ");
+                        //Swal.fire({
+                        //    position: "top-end",
+                        //    icon: "error",
+                        //    title: data.Message + "\n " + errorText,
+                        //    showConfirmButton: false,
+                        //    timer: 3500
+                        //});
+                       
+
+                        $(".errormsg").text(errorText);
+                        if (data.Data && data.Data.length > 0) {
+
+                            data.Data.forEach(function (e) {
+
+                                // Add red border using name attribute
+                                $("[name='" + e.Field + "']").addClass("is-invalid");
+
+                            });
+                        }
+                        // Clear old errors first
+                        $(".input-validation-error").removeClass("input-validation-error");
+                        $("[data-valmsg-for]").text("");
+
+                        if (data.Data && data.Data.length > 0) {
+
+                            data.Data.forEach(function (e) {
+
+                                // Add red border (Bootstrap compatible)
+                                $("[name='" + e.Field + "']")
+                                    .addClass("input-validation-error");
+
+                                // Bind error message to asp-validation-for span
+                                $("[data-valmsg-for='" + e.Field + "']")
+                                    .removeClass("field-validation-valid")
+                                    .addClass("field-validation-error")
+                                    .text(e.Message);
+                            });
+                        }
+                        $(".errormsg").removeClass("d-none");
                     } else {
                         Swal.fire({
                             position: "top-end",
@@ -83,6 +132,8 @@
                             showConfirmButton: false,
                             timer: 3500
                         });
+                        $(".errormsg").html(data.Message);
+                        $(".errormsg").removeClass("d-none");
                     }
 
                 } catch (error) {
@@ -90,13 +141,20 @@
                     Swal.fire({
                         text: "An error occurred: " + error.message
                     });
+                    $(".errormsg").html(data.Message);
+                    $(".errormsg").removeClass("d-none");
                 }
             }
         });
     });
 
 
-
+    function resetappication() {
+        $("#ApplicationId").val(0);
+        $("#ApplicationName").val("")
+        $("#Description").val("")
+        $("#origin").val("")
+    }
 
     $(document).on("click", ".btn-Edit-code", function (e) {
         let editBtn = $(e.target).closest(".btn-Edit-code");

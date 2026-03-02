@@ -57,11 +57,13 @@ namespace WebAnalytics.Controllers
         private IActionResult InvalidModelStateResponse()
         {
             var errors = ModelState
-                .Where(x => x.Value?.Errors?.Count > 0)
-                .SelectMany(x => x.Value!.Errors)
-                .Select(e => e.ErrorMessage)
-                .ToList();
-
+     .Where(x => x.Value?.Errors?.Count > 0)
+     .SelectMany(x => x.Value!.Errors.Select(e => new
+     {
+         Field = x.Key,
+         Message = e.ErrorMessage
+     }))
+     .ToList();
             return Json(new DTOGenericResponse<object>(
                 ConnKeyConstants.IncorrectData,
                 ConnKeyConstants.IncorrectDataMessage,
