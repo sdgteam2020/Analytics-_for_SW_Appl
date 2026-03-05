@@ -77,7 +77,7 @@
                             timer: 3500
                         });
                         $(".errormsg").html(data.Message);
-                        (".errormsg").addClass("d-none");
+                        $(".errormsg").addClass("d-none");
                         resetappication()
                         loadApplications();
 
@@ -141,7 +141,7 @@
                     Swal.fire({
                         text: "An error occurred: " + error.message
                     });
-                    $(".errormsg").html(data.Message);
+                    $(".errormsg").html(error.message);
                     $(".errormsg").removeClass("d-none");
                 }
             }

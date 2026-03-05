@@ -15,7 +15,7 @@ $(document).ready(function () {
         headers: myHeadersIncrement
     };
 
-    fetch("https://localhost:7144/api/ApplicationHit/IncrementHits", requestIncrement)
+    fetch("https://192.168.10.40/api/ApplicationHit/IncrementHits", requestIncrement)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
@@ -27,7 +27,7 @@ $(document).ready(function () {
         headers: myHeadersIncrementStart
     };
 
-    fetch("https://localhost:7144/api/Application/ApplicationSessionStart", requestStart)
+    fetch("https://192.168.10.40/api/Application/ApplicationSessionStart", requestStart)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));

@@ -33,8 +33,7 @@ namespace WebAnalytics.Controllers
         {
             var model = new DTOIMLoginRequest
             {
-               // UserName = "admin",
-               // Password = "Admin@123"
+              
             };
            
             string GetSalt = AESEncrytDecry.GenerateKey();

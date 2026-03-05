@@ -189,11 +189,11 @@ app.UseCookiePolicy(new CookiePolicyOptions
     Secure = CookieSecurePolicy.Always,
     MinimumSameSitePolicy = SameSiteMode.Strict
 });
-//app.Use(async (context, next) =>
-//{
-//    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-//    await next();
-//});
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+    await next();
+});
 
 
 
@@ -204,8 +204,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//app.UsePathBase("/HitCounter");
-//app.Use((ctx, next) => { ctx.Request.PathBase = "/HitCounter"; return next(); }); // if needed
+
 // AuthN then AuthZ
 app.UseAuthentication();
 app.UseAuthorization();

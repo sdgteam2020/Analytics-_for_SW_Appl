@@ -19,7 +19,7 @@ $(document).ready(function () {
         headers: myHeaderstall
     };
 
-    fetch("https://localhost:7144/api/ApplicationHit/HitswithConcurrentuser", requestall)
+    fetch("https://192.168.10.40/api/ApplicationHit/HitswithConcurrentuser", requestall)
         .then((response) => response.json())
         .then((data) => {
             $("#TodayHits").html(data.TodayHits);

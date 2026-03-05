@@ -32,18 +32,16 @@ namespace DataAccessLayerEF
                 appHits = new MApplicationHits
                 {
                     ApplicationId = ApplicationId,
-                    //Date = today,
+                    
                     TotalHits = 1
-                    //TodayHits = 1,
-                    //MonthHits = 1
+                    
                 };
                 _context.trnmApplicationHits.Add(appHits);
             }
             else
             {
                 appHits.TotalHits++;
-                //appHits.TodayHits++;
-                //appHits.MonthHits++;
+               
             }
 
             await _context.SaveChangesAsync();
@@ -86,31 +84,7 @@ namespace DataAccessLayerEF
             return appHits;
         }
 
-        //public async Task<DTOCounterHitsResponse> HitCounter(int ApplicationId)
-        //{
-        //    DTOCounterHitsResponse dTOCounterHitsResponse = new DTOCounterHitsResponse();
-        //    var currentDate = DateTime.Today;
-        //    var currentMonth = DateTime.Now.Month;
-        //    var currentYear = DateTime.Now.Year;
-
-        //    var hitCounts = await _context.trnmApplicationHits
-        //        .Where(a => a.ApplicationId == ApplicationId)
-        //        .GroupBy(a => 1)  // Grouping by a constant because we only want one aggregate result
-        //        .Select(g => new
-        //        {
-        //            TotalHits = g.Sum(a => a.TotalHits),
-        //            TodayHits = g.Where(a => a.Date.Date == currentDate).Sum(a => a.TotalHits),
-        //            MonthlyHits = g.Where(a => a.Date.Month == currentMonth && a.Date.Year == currentYear).Sum(a => a.TotalHits)
-        //        })
-        //        .FirstOrDefaultAsync();  // Use FirstOrDefaultAsync to get the first result from the aggregation
-
-        //    // After this, you can access the values like:
-
-        //    dTOCounterHitsResponse.TotalHits = hitCounts?.TotalHits ?? 0;
-        //    dTOCounterHitsResponse.TodayHits = hitCounts?.TodayHits ?? 0;
-        //    dTOCounterHitsResponse.MonthlyHits = hitCounts?.MonthlyHits ?? 0;
-        //    return dTOCounterHitsResponse;
-        //}
+        
         public async Task<DTOCounterHitsResponse> HitCounter(int ApplicationId)
         {
 
@@ -125,8 +99,7 @@ namespace DataAccessLayerEF
       select new DTOCounterHitsResponse
       {
           TotalHits = b.TotalHits,
-         // TodayHits = a.TodayHits,
-          //MonthlyHits = a.MonthHits // was MonthHits?
+         
       }
 
       ).AsNoTracking().FirstOrDefaultAsync();
@@ -195,7 +168,7 @@ namespace DataAccessLayerEF
 
                     Project = app.ApplicationName,
 
-                    // from TrnMpplicationHitsSummary (aggregated)
+                   
                     Today = _context.TrnMpplicationHitsSummary
                                 .Where(hs => hs.ApplicationId == app.ApplicationId
                                           && hs.Date >= startOfToday && hs.Date < endOfToday)
@@ -206,7 +179,7 @@ namespace DataAccessLayerEF
                                           && hs.Date >= firstOfMonth && hs.Date < nextMonth)
                                 .Sum(hs => (int?)hs.TodayHits) ?? 0,
 
-                    // from trnmApplicationHits (single row per app; pick the value if present)
+                   
                     Total = _context.trnmApplicationHits
                                 .Where(ah => ah.ApplicationId == app.ApplicationId)
                                 .Select(ah => (int?)ah.TotalHits)

@@ -29,7 +29,8 @@ namespace Domain.Requests
         [MinLength(1, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MinLengthError")]
         [MaxLength(50, ErrorMessageResourceType = typeof(ErrorMessages), ErrorMessageResourceName = "MaxLengthError")]
         [RegularExpression(
-     @"^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$",ErrorMessage = "Please enter a valid URL")]
+@"^(https?:\/\/)?(([\w-]+\.)+[\w-]+|(\d{1,3}\.){3}\d{1,3})(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$",
+ErrorMessage = "Please enter a valid URL")]
         public required string origin { get; set; }
     }
 }
