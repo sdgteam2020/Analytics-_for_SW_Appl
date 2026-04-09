@@ -100,7 +100,7 @@ function GetAllUser() {
 
     $.ajax({
         url: '/Account/GetAllUser',
-        contentType: 'application/x-www-form-urlencoded',
+        contentType: 'application/x-_###_-form-urlencoded',
         data: userdata,
         type: 'POST',
         success: function (response) {

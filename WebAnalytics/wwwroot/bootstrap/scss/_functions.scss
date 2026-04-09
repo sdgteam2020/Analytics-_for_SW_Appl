@@ -178,8 +178,8 @@ $_luminance-list: .0008 .001 .0011 .0013 .0015 .0017 .002 .0022 .0025 .0027 .003
 }
 
 // Return WCAG2.2 relative luminance
-// See link_www.w3.org/TR/WCAG/#dfn-relative-luminance
-// See link_www.w3.org/TR/WCAG/#dfn-contrast-ratio
+// See link__###_.w3.org/TR/WCAG/#dfn-relative-luminance
+// See link__###_.w3.org/TR/WCAG/#dfn-contrast-ratio
 @function luminance($color) {
   $rgb: (
     "r": red($color),

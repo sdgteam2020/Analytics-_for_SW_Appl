@@ -4,19 +4,19 @@
   "libraries": [
     {
       "library": "bootstrap@5.3.8",
-      "destination": "wwwroot/bootstrap/"
+      "destination": "_###_root/bootstrap/"
     },
     {
       "library": "sweetalert2@11.23.0",
-      "destination": "wwwroot/sweetalert2/"
+      "destination": "_###_root/sweetalert2/"
     },
     {
       "library": "Chart.js@4.5.0",
-      "destination": "wwwroot/Chart.js/"
+      "destination": "_###_root/Chart.js/"
     },
     {
       "library": "chartjs-plugin-datalabels@2.2.0",
-      "destination": "wwwroot/chartjs-plugin-datalabels/"
+      "destination": "_###_root/chartjs-plugin-datalabels/"
     }
   ]
 }

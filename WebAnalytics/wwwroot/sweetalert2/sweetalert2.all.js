@@ -2684,7 +2684,7 @@
       const optionValue = inputOption[0];
       const optionLabel = inputOption[1];
       // <optgroup> spec:
-      // link_www.w3.org/TR/html401/interact/forms.html#h-17.6
+      // link__###_.w3.org/TR/html401/interact/forms.html#h-17.6
       // "...all OPTGROUP elements must be specified directly within a SELECT element (i.e., groups may not be nested)..."
       // check whether this is a <optgroup>
       if (Array.isArray(optionLabel)) {
@@ -4260,7 +4260,7 @@
      */
     url: (string, validationMessage) => {
       // taken from link_stackoverflow.com/a/3809435 with a small change from #1306 and #2013
-      return /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-z]{2,63}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || 'Invalid URL');
+      return /^https?:\/\/(_###_\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-z]{2,63}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)$/.test(string) ? Promise.resolve() : Promise.resolve(validationMessage || 'Invalid URL');
     }
   };
 

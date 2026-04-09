@@ -46,7 +46,7 @@
 
                 // (Optional) If you also use JSON bodies, you can read & scan Request.Body
                 // with EnableBuffering – but since your screenshot shows
-                // application/x-www-form-urlencoded, this part is not mandatory now.
+                // application/x-_###_-form-urlencoded, this part is not mandatory now.
             }
 
             // If everything is clean, continue the pipeline

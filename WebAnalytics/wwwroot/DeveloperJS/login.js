@@ -1,4 +1,5 @@
-﻿document.querySelector("form").addEventListener("submit", function (e) {
+﻿
+document.querySelector("form").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const passwordInput = document.querySelector("#Password");

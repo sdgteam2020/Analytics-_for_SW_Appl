@@ -4,7 +4,7 @@ let barChart;
 let barChartForConcurrentuser;
 const intervalInMilliseconds = 10000;
 let appColorMap = {};
-$(document).ready(function () {
+$(function () {
 
     const myHeadersIncrement = new Headers();
     myHeadersIncrement.append("X-API-KEY", 'a27c3cae-df44-4e40-8d47-d9b25939f21f');
@@ -42,7 +42,7 @@ $(document).ready(function () {
 
     }, intervalInMilliseconds);
    
-    $("#ddlappliction").change(function () {
+    $("#ddlappliction").on("change", function () {
         
         showchart($(this).val(), $("#ddlMonths").val(), $("#ddlYears").val());  // Assuming 'ddlApplication' is a function you want to call
         AllConcurrentuser($(this).val())
@@ -53,14 +53,14 @@ $(document).ready(function () {
       
     });
 
-    $("#ddlYears").change(function () {
+    $("#ddlYears").on("change", function () {
         showchart(0, $("#ddlMonths").val(), $("#ddlYears").val())
         //GetDataMonthsWise($("#ddlappliction").val(), $(this).val())
         //GetDataDaysWise($("#ddlappliction").val(), $("#ddlYears").val(), $("#ddlMonths").val())
         
     });
 
-    $("#ddlMonths").change(function () {
+    $("#ddlMonths").on("change", function () {
         showchart(0, $("#ddlMonths").val(), $("#ddlYears").val())
      // GetDataDaysWise($("#ddlappliction").val(), $("#ddlYears").val(), $(this).val())
        
@@ -588,7 +588,7 @@ async function showPopup(applicationId, label) {
 
         if (data && data.length > 0) {
             // Initialize an empty string to build the HTML for all cards.
-            let cardsHtml = '';
+            //let cardsHtml = '';
             //let cardsHtmllines = '';
            
             const timelineList = document.getElementById('timelineList');
@@ -669,7 +669,7 @@ async function showPopupdatewise(Appname, day) {
 
         if (data && data.length > 0) {
             // Initialize an empty string to build the HTML for all cards.
-            let cardsHtml = '';
+            //let cardsHtml = '';
             //let cardsHtmllines = '';
 
             const timelineList = document.getElementById('timelineList');

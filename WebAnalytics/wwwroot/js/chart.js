@@ -1,6 +1,6 @@
 ﻿/*!
  * Chart.js v4.5.0
- * link_www.chartjs.org
+ * link__###_.chartjs.org
  * (c) 2025 Chart.js Contributors
  * Released under the MIT License
  */

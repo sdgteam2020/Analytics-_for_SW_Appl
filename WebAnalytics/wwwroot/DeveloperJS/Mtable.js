@@ -9,7 +9,7 @@
         const response = await fetch('/Master/GetAllMMaster', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-_###_-form-urlencoded'
             },
             body: userdata
         });

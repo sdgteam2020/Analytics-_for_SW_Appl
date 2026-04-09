@@ -2,7 +2,7 @@
 
 // Hide content visually while keeping it accessible to assistive technologies
 //
-// See: link_www.a11yproject.com/posts/2013-01-11-how-to-hide-content/
+// See: link__###_.a11yproject.com/posts/2013-01-11-how-to-hide-content/
 // See: link_kittygiraudel.com/2016/10/13/css-hide-and-seek/
 
 @mixin visually-hidden() {
@@ -29,7 +29,7 @@
 // Use to only display content when it's focused, or one of its child elements is focused
 // (i.e. when focus is within the element/container that the class was applied to)
 //
-// Useful for "Skip to main content" links; see link_www.w3.org/WAI/WCAG22/Techniques/general/G1.html
+// Useful for "Skip to main content" links; see link__###_.w3.org/WAI/WCAG22/Techniques/general/G1.html
 
 @mixin visually-hidden-focusable() {
   &:not(:focus):not(:focus-within) {
