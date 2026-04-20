@@ -1,5 +1,5 @@
 ﻿async function mMsater(sectid = '', ddl, TableId, ParentId) {
-
+  
     const userdata = new URLSearchParams({
         id: TableId,
         ParentId: ParentId
@@ -9,7 +9,7 @@
         const response = await fetch('/Master/GetAllMMaster', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-_###_-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: userdata
         });
