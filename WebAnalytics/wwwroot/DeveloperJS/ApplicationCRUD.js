@@ -170,8 +170,10 @@
         let editBtn = $(e.target).closest(".btn-view-code");
 
         const key = editBtn.data("key");
+        var baseUrl = $(location).attr('origin') + "/api/";
+        console.log(baseUrl);
         // Ensure apiBase ends with a trailing slash
-        const base = (typeof apiBase1 === "string" ? apiBase1 : "").replace(/\/?$/, "/");
+        const base = (typeof baseUrl === "string" ? baseUrl : "").replace(/\/?$/, "/");
 
         // Build endpoints
         const urlIncrement = `${base}ApplicationHit/IncrementHits`;

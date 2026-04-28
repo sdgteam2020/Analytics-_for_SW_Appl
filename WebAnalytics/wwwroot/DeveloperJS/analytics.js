@@ -15,7 +15,7 @@ $(function () {
         headers: myHeadersIncrement
     };
 
-    fetch("https://192.168.10.40/api/ApplicationHit/IncrementHits", requestIncrement)
+    fetch("https://localhost:7144/api/ApplicationHit/IncrementHits", requestIncrement)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
@@ -27,7 +27,7 @@ $(function () {
         headers: myHeadersIncrementStart
     };
 
-    fetch("https://192.168.10.40/api/Application/ApplicationSessionStart", requestStart)
+    fetch("https://localhost:7144/api/Application/ApplicationSessionStart", requestStart)
         .then((response) => response.text())
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
@@ -143,10 +143,12 @@ function showchart(Id, Month, Years) {
                     }]
                 },
                 options: {
+                   
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
-                            /* text: 'Years Wise Status'*/
                         },
                         legend: {
                             display: false
@@ -163,6 +165,7 @@ function showchart(Id, Month, Years) {
                             }
                         }
                     }
+
                 }, plugins: [ChartDataLabels] // Register the plugin
             });
             BindchartMonthsWiseHitCounter(dtoApplicationMonthsWiseList)
@@ -289,13 +292,16 @@ function BindchartMonthsWiseHitCounter(dtoApplicationMonthsWiseList) {
                         }
                     }
                 },
-                animation: {
-                    duration: 2000,  // Duration of the animation
-                    easing: 'easeOutElastic',  // Elastic easing for the line chart
-                    onComplete: function () {
-                        console.log('Line chart animation completed!');
-                    }
-                },
+                //animation: {
+                //    duration: 2000,  // Duration of the animation
+                //    easing: 'easeOutElastic',  // Elastic easing for the line chart
+                //    onComplete: function () {
+                //        console.log('Line chart animation completed!');
+                //    }
+                //},
+                animation: false,
+                resizeDelay: 300,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -333,7 +339,7 @@ function BindchartDaysWiseHitCounter(dtoApplicationDayWiseList) {
         for (let day = 1; day <= daysInMonth; day++) {
             lineLabels.push(day);
         }
-
+        
 
         // Organize data by ApplicationName
         const applications = [...new Set(dtoApplicationDayWiseList.map(item => item.ApplicationName))];  // Unique application names
@@ -355,6 +361,7 @@ function BindchartDaysWiseHitCounter(dtoApplicationDayWiseList) {
                 tension: 0.1,  // Line tension for smoothness
                 barThickness: 30,
             };
+           
         });// Create the Line Chart
         if (lineChartDays) {
             lineChartDays.destroy();
@@ -380,13 +387,9 @@ function BindchartDaysWiseHitCounter(dtoApplicationDayWiseList) {
                         }
                     }
                 },
-                animation: {
-                    duration: 2000,  // Duration of the animation
-                    easing: 'easeOutElastic',  // Elastic easing for the line chart
-                    onComplete: function () {
-                        console.log('Line chart animation completed 1111!');
-                    }
-                },
+                animation: false,
+                resizeDelay: 300,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -497,7 +500,10 @@ function AllConcurrentuser(Id) {
                         barThickness: 30, // Adjust the thickness of the bars
                     }]
                 },
+                
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
@@ -524,24 +530,9 @@ function AllConcurrentuser(Id) {
                             const element = elements[0];
                             const dataIndex = element.index;
 
-                            // Retrieve the corresponding data from the original structured array
                             const clickedItem = chartData[dataIndex];
 
-                            const label = clickedItem.label;
-                            const value = clickedItem.data;
-                            const applicationId = clickedItem.applicationId;
-
-                            // Log all the retrieved information
-                            //console.log(`Clicked on: Label = ${label}, Value = ${value}, Application ID = ${applicationId}`);
-
-                            // Example: Alert user with the new information
-                            // Note: It's better to use a modal or a custom UI instead of alert() in real applications.
-                            // Since this is just an example, we will use alert() as requested.
-                            // showPopup() is a placeholder function that would display a modal or a custom UI.
-                            //alert(`You clicked on ${label} (ID: ${applicationId}): ${value}`);
-
-                            // If you have a showPopup function, you can pass the application ID to it.
-                            showPopup(applicationId, label)
+                            showPopup(clickedItem.applicationId, clickedItem.label)
                         }
                     }
                 },

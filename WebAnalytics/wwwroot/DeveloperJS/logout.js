@@ -6,7 +6,7 @@ const requestEND = {
     headers: myHeadersIncrementEND
 };
 
-fetch("https://192.168.10.40/api/Application/ApplicationSessionEnd", requestEND)
+fetch("https://localhost:7144/api/Application/ApplicationSessionEnd", requestEND)
     .then((response) => response.text())
     .then((result) => console.log(result))
     .catch((error) => console.error(error));

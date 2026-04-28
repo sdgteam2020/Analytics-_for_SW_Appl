@@ -79,19 +79,29 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", cors =>
-        cors
-             .SetIsOriginAllowed(origin =>
-             {
-                 using var scope = builder.Services.BuildServiceProvider().CreateScope();
-                 var svc = scope.ServiceProvider.GetRequiredService<IAllowedOriginService>();
-                 return svc.IsAllowed(origin);
-             }) // allow all dynamically
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
-});
+    options.AddPolicy("CorsPolicy", policy =>
+        policy
+            .SetIsOriginAllowed(origin =>
+            {
+                using var scope = builder.Services.BuildServiceProvider().CreateScope();
+                var svc = scope.ServiceProvider.GetRequiredService<IAllowedOriginService>();
+                return svc.IsAllowed(origin); // dynamic origin validation
+            })
+            .WithMethods("GET", "POST", "HEAD") // ✅ allowed methods
+            .WithHeaders("Authorization", "Content-Type", "X-Requested-With", "X-API-KEY") // ✅ include your custom header
+            .AllowCredentials() // ✅ allow cookies/auth headers
+            .SetPreflightMaxAge(TimeSpan.FromMinutes(20)) // ✅ cache preflight
 
+    );
+});
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("CorsPolicy", cors =>
+//        cors
+//            .AllowAnyHeader()
+//            .AllowAnyMethod()
+//            .AllowAnyOrigin()); // ✅ correct
+//});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -134,7 +144,7 @@ app.Use(async (ctx, next) =>
         return Task.CompletedTask;
     });
     // ========== 0) BLOCK DANGEROUS HTTP METHODS FIRST ==========
-    var blockedMethods = new[] { "OPTIONS", "TRACE", "TRACK", "CONNECT" };
+    var blockedMethods = new[] {  "TRACE", "TRACK", "CONNECT" };
 
     if (blockedMethods.Contains(ctx.Request.Method, StringComparer.OrdinalIgnoreCase))
     {
@@ -142,10 +152,12 @@ app.Use(async (ctx, next) =>
         app.Logger.LogWarning($"Security: Blocked {ctx.Request.Method} request to {ctx.Request.Path}");
 
         ctx.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
-        ctx.Response.Headers["Allow"] = "GET, HEAD, POST"; // Only allowed methods
+        ctx.Response.Headers["Allow"] = "GET, HEAD, POST,OPTIONS"; // Only allowed methods
+
         await ctx.Response.WriteAsync("Method Not Allowed");
         return; // Stop further processing
     }
+    // ========== 0) BLOCK ONLY TRULY DANGEROUS HTTP METHODS ==========
 
     // 1) Content Security Policy
     ctx.Response.Headers["Content-Security-Policy"] =
@@ -198,7 +210,7 @@ app.Use(async (context, next) =>
 
 
 app.UseRouting();
-app.UseCors("CorsPolicy");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -211,7 +223,7 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 // Session BEFORE endpoints (so MVC/Razor can use it)
 app.UseSession();
-
+app.UseCors("CorsPolicy");
 // Custom middlewares (after auth so you can access User, etc.)
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseMiddleware<XssProtectionMiddleware>();

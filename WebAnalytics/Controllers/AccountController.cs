@@ -51,6 +51,11 @@ namespace WebAnalytics.Controllers
                 return View(request);
 
             DecryptCredentials(request);
+            if(string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid credentials.");
+                return View(request);
+            }
 
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
